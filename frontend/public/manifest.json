@@ -1,0 +1,28 @@
+{
+  "short_name": "HabitFlow",
+  "name": "HabitFlow — Cross-Platform Habit Tracker",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0F172A",
+  "theme_color": "#6366F1",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "description": "Track habits, build streaks, and gain data-driven insights on mobile and desktop."
+}
