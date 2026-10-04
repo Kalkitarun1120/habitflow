@@ -17,10 +17,10 @@
       "cwe_id": "CWE-942",
       "file": "backend/app/main.py",
       "line_range": "41-47",
-      "status": "VALIDATED",
+      "status": "RESOLVED",
       "description": "The FastAPI application initializes CORSMiddleware with allow_origins=['*'] and allow_credentials=True. While settings.ALLOWED_ORIGINS is defined in config.py, it is not passed to the middleware.",
       "impact": "Enables any unauthorized third-party origin to make authenticated cross-origin browser requests if credentials or tokens are shared.",
-      "remediation": "Update CORSMiddleware in backend/app/main.py to use allow_origins=settings.ALLOWED_ORIGINS instead of ['*']."
+      "remediation": "Updated CORSMiddleware in backend/app/main.py to strictly enforce allow_origins=settings.ALLOWED_ORIGINS."
     },
     {
       "id": "SEC-002",
@@ -30,10 +30,10 @@
       "cwe_id": "CWE-798",
       "file": "backend/app/core/config.py",
       "line_range": "22-25",
-      "status": "VALIDATED",
+      "status": "RESOLVED",
       "description": "JWT_SECRET_KEY has a static default fallback value ('super-secret-key-habitflow-2026-change-in-production-!'). In production, if an operator does not explicitly define JWT_SECRET_KEY in the environment, tokens could be forged using the known default secret.",
       "impact": "Potential token forgery if environment variables are omitted during deployment.",
-      "remediation": "Enforce mandatory JWT_SECRET_KEY in production environments and add a startup assertion or validator in Settings to reject known insecure default keys."
+      "remediation": "Implemented Pydantic field_validator in backend/app/core/config.py enforcing strong keys and raising ValueError if default/insecure keys are used when ENVIRONMENT=production."
     },
     {
       "id": "SEC-003",
@@ -43,10 +43,10 @@
       "cwe_id": "CWE-307",
       "file": "backend/app/routers/auth.py",
       "line_range": "266-283",
-      "status": "VALIDATED",
+      "status": "RESOLVED",
       "description": "While OTP generation and verification endpoints have strict cooldown and 5-attempt limits, the standard /auth/login endpoint does not have rate limiting at the application level.",
       "impact": "Vulnerability to automated credential-stuffing or brute-force password guessing attacks without reverse proxy throttling.",
-      "remediation": "Implement an application-level rate limiter (e.g. slowapi / Redis rate limiter) or reverse proxy rate limiting (e.g. Nginx limit_req) on /api/auth/login."
+      "remediation": "Built thread-safe sliding-window RateLimiter in backend/app/core/rate_limiter.py and applied it as a dependency on /login, /register, /forgot-password, /reset-password, and /phone/send-otp."
     }
   ]
 }

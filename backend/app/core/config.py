@@ -1,5 +1,6 @@
 import os
 from typing import List, Optional
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +18,11 @@ class Settings(BaseSettings):
 
     # Database URL override or computed
     DATABASE_URL: Optional[str] = None
+
+    # Environment & Security Config
+    ENVIRONMENT: str = "development"
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_TESTING: bool = False
 
     # JWT Config
     JWT_SECRET_KEY: str = "super-secret-key-habitflow-2026-change-in-production-!"
@@ -48,6 +54,17 @@ class Settings(BaseSettings):
     OTP_MAX_ATTEMPTS: int = 5
     OTP_RESEND_COOLDOWN_SECONDS: int = 60
     OTP_DEV_MODE: bool = False  # Set to True for local testing without Twilio SMS delivery
+
+    @field_validator("JWT_SECRET_KEY")
+    @classmethod
+    def validate_jwt_secret_key(cls, v: str) -> str:
+        env = os.getenv("ENVIRONMENT", "development").lower()
+        if env == "production" and ("change-in-production" in v or len(v) < 32):
+            raise ValueError(
+                "CRITICAL SECURITY CONFIGURATION ERROR: Insecure or default JWT_SECRET_KEY detected in production environment! "
+                "Please set a strong, random 256-bit secret key in your environment variables."
+            )
+        return v
 
     model_config = SettingsConfigDict(
         env_file=(".env", "backend/.env", "../.env", os.path.join(os.path.dirname(__file__), "..", "..", ".env")),

@@ -46,6 +46,12 @@ from app.services.otp_service import (
     verify_email_otp,
 )
 from app.services.google_auth_service import verify_google_id_token
+from app.core.rate_limiter import (
+    login_rate_limiter,
+    register_rate_limiter,
+    password_reset_rate_limiter,
+    phone_otp_rate_limiter,
+)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -89,7 +95,7 @@ def build_user_response(user: User) -> UserResponse:
 
 # --- 1. Registration Flow (with Unified Account & Phone OTP) ---
 
-@router.post("/register/request-otp")
+@router.post("/register/request-otp", dependencies=[Depends(register_rate_limiter)])
 async def register_request_otp(req: RegisterRequestOTPRequest, db: Session = Depends(get_db)):
     """
     Validates registration input (name, email, phone, password), checks uniqueness across
@@ -135,7 +141,7 @@ async def register_request_otp(req: RegisterRequestOTPRequest, db: Session = Dep
     }
 
 
-@router.post("/register/verify-otp", response_model=Token, status_code=status.HTTP_201_CREATED)
+@router.post("/register/verify-otp", dependencies=[Depends(register_rate_limiter)], response_model=Token, status_code=status.HTTP_201_CREATED)
 def register_verify_otp(req: RegisterVerifyOTPRequest, db: Session = Depends(get_db)):
     """
     Verifies phone OTP code, creates single unified user with email and phone,
@@ -202,7 +208,7 @@ def register_verify_otp(req: RegisterVerifyOTPRequest, db: Session = Depends(get
     return Token(access_token=token, token_type="bearer", user=build_user_response(user))
 
 
-@router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
+@router.post("/register", dependencies=[Depends(register_rate_limiter)], response_model=Token, status_code=status.HTTP_201_CREATED)
 def register(user_in: UserRegister, db: Session = Depends(get_db)):
     """Standard direct registration with optional phone number."""
     email_clean = normalize_email_address(user_in.email)
@@ -263,7 +269,7 @@ def register(user_in: UserRegister, db: Session = Depends(get_db)):
 
 # --- 2. Normal Login (NO OTP FOR NORMAL LOGIN) ---
 
-@router.post("/login", response_model=Token)
+@router.post("/login", dependencies=[Depends(login_rate_limiter)], response_model=Token)
 def login(user_in: UserLogin, db: Session = Depends(get_db)):
     """Authenticates user with email and password without forcing OTP."""
     email_clean = user_in.email.lower().strip()
@@ -284,7 +290,7 @@ def login(user_in: UserLogin, db: Session = Depends(get_db)):
 
 # --- 3. Forgot & Reset Password Flow ---
 
-@router.post("/forgot-password", response_model=ForgotPasswordResponse)
+@router.post("/forgot-password", dependencies=[Depends(password_reset_rate_limiter)], response_model=ForgotPasswordResponse)
 async def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     """
     Sends a secure password reset code to the provided email if registered.
@@ -309,7 +315,7 @@ async def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_
     )
 
 
-@router.post("/reset-password")
+@router.post("/reset-password", dependencies=[Depends(password_reset_rate_limiter)])
 def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     """Verifies recovery code and sets a new secure password hash."""
     email_clean = normalize_email_address(req.email)
@@ -355,7 +361,7 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
 
 # --- 2. Phone Number + OTP Authentication (V2 Feature) ---
 
-@router.post("/phone/send-otp", response_model=PhoneSendOTPResponse)
+@router.post("/phone/send-otp", dependencies=[Depends(phone_otp_rate_limiter)], response_model=PhoneSendOTPResponse)
 async def phone_send_otp(req: PhoneSendOTPRequest, db: Session = Depends(get_db)):
     """Generates and transmits OTP to the requested phone number."""
     normalized_phone = normalize_phone_number(req.phone_number)
@@ -370,7 +376,7 @@ async def phone_send_otp(req: PhoneSendOTPRequest, db: Session = Depends(get_db)
     )
 
 
-@router.post("/phone/verify-otp", response_model=PhoneAuthResponse)
+@router.post("/phone/verify-otp", dependencies=[Depends(phone_otp_rate_limiter)], response_model=PhoneAuthResponse)
 def phone_verify_otp(req: PhoneVerifyOTPRequest, db: Session = Depends(get_db)):
     """
     Verifies phone OTP and logs into the existing unified account.
