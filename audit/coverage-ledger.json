@@ -1,0 +1,257 @@
+{
+  "audit_version": "2.0",
+  "project_name": "HabitFlow",
+  "audit_date": "2026-10-04",
+  "coverage_summary": {
+    "total_domains_audited": 21,
+    "completed_domains": 21,
+    "coverage_percentage": 100
+  },
+  "domains": [
+    {
+      "id": 1,
+      "domain": "Authentication",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/routers/auth.py",
+        "backend/app/core/security.py",
+        "backend/app/services/otp_service.py",
+        "frontend/src/context/AuthContext.tsx"
+      ],
+      "verification_method": "Static code analysis, execution flow tracing, unit testing",
+      "verdict": "SECURE / HARDENED"
+    },
+    {
+      "id": 2,
+      "domain": "Authorization and IDOR",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/dependencies.py",
+        "backend/app/routers/habits.py",
+        "backend/app/routers/categories.py",
+        "backend/app/routers/statistics.py",
+        "backend/app/routers/dashboard.py",
+        "backend/app/routers/calendar.py"
+      ],
+      "verification_method": "Inspect all CRUD operations for user_id filtering",
+      "verdict": "SECURE (No IDOR vulnerabilities found)"
+    },
+    {
+      "id": 3,
+      "domain": "Google OAuth",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/services/google_auth_service.py",
+        "backend/app/routers/auth.py",
+        "frontend/src/components/GoogleAuthButton.tsx"
+      ],
+      "verification_method": "Tokeninfo endpoint audit, audience validation, email_verified check",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 4,
+      "domain": "Phone OTP",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/services/otp_service.py",
+        "backend/app/services/sms_service.py",
+        "backend/app/routers/auth.py"
+      ],
+      "verification_method": "Cryptographic CSPRNG review, SHA-256 salted hashing, cooldown and max attempt tracking",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 5,
+      "domain": "Email/password authentication",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/routers/auth.py",
+        "backend/app/core/security.py"
+      ],
+      "verification_method": "Bcrypt salt and hash check, timing-attack resistance analysis, forgot-password enumeration testing",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 6,
+      "domain": "Account linking between email and phone",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/routers/auth.py",
+        "backend/app/models/models.py"
+      ],
+      "verification_method": "Collision detection audit, unlinking safety check (at least 1 provider retention)",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 7,
+      "domain": "Session/JWT handling",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/security.py",
+        "backend/app/core/dependencies.py",
+        "frontend/src/services/api.ts"
+      ],
+      "verification_method": "Algorithm enforcement (HS256), expiration verification, signature validation",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 8,
+      "domain": "API endpoints",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/main.py",
+        "backend/app/routers/*.py"
+      ],
+      "verification_method": "Global exception handling, Pydantic response models, HTTP status codes",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 9,
+      "domain": "Input validation",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/schemas/schemas.py",
+        "backend/app/services/otp_service.py"
+      ],
+      "verification_method": "Pydantic field constraints, regex normalization (E.164 phone, email)",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 10,
+      "domain": "SQL/database access",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/database.py",
+        "backend/app/models/models.py",
+        "backend/app/routers/*.py",
+        "backend/app/services/analytics_service.py"
+      ],
+      "verification_method": "SQLAlchemy 2.0 ORM query inspection, raw SQL string concatenation audit",
+      "verdict": "SECURE (100% Parameterized)"
+    },
+    {
+      "id": 11,
+      "domain": "CORS",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/main.py",
+        "backend/app/core/config.py"
+      ],
+      "verification_method": "FastAPI CORSMiddleware configuration review",
+      "verdict": "FINDING IDENTIFIED (Wildcard origin in dev mode)"
+    },
+    {
+      "id": 12,
+      "domain": "CSRF",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/dependencies.py",
+        "frontend/src/services/api.ts"
+      ],
+      "verification_method": "Bearer Token vs Cookie architecture assessment",
+      "verdict": "SECURE (Immune to cookie CSRF due to Bearer headers)"
+    },
+    {
+      "id": 13,
+      "domain": "XSS",
+      "status": "AUDITED",
+      "target_files": [
+        "frontend/src/**/*.tsx"
+      ],
+      "verification_method": "dangerouslySetInnerHTML scan, React JSX auto-escaping validation",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 14,
+      "domain": "Sensitive information exposure",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/main.py",
+        "backend/app/schemas/schemas.py",
+        "backend/app/routers/auth.py"
+      ],
+      "verification_method": "Response model exclusion check (passwords, OTP hashes, stack traces)",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 15,
+      "domain": "Secrets and environment variables",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/config.py",
+        ".gitignore",
+        "docker-compose.yml"
+      ],
+      "verification_method": "Secret leakage scan, .gitignore rule verification, pydantic-settings loading",
+      "verdict": "FINDING IDENTIFIED (Hardcoded fallback keys in dev config)"
+    },
+    {
+      "id": 16,
+      "domain": "File upload/download functionality",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/routers/auth.py",
+        "backend/app/main.py"
+      ],
+      "verification_method": "MIME type check, file size limit, extension sanitization, UUID filename generation, path traversal audit",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 17,
+      "domain": "Rate limiting",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/services/otp_service.py",
+        "backend/app/routers/auth.py"
+      ],
+      "verification_method": "OTP rate limiting verified; general endpoint brute-force review",
+      "verdict": "FINDING IDENTIFIED (Recommendation: Global login rate limiting)"
+    },
+    {
+      "id": 18,
+      "domain": "Dependency vulnerabilities",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/requirements.txt",
+        "frontend/package.json"
+      ],
+      "verification_method": "Dependency version audit against known CVE databases",
+      "verdict": "SECURE (All dependencies up to date)"
+    },
+    {
+      "id": 19,
+      "domain": "Frontend security",
+      "status": "AUDITED",
+      "target_files": [
+        "frontend/src/App.tsx",
+        "frontend/src/context/AuthContext.tsx",
+        "frontend/src/services/api.ts"
+      ],
+      "verification_method": "Client route authorization, Axios interceptor, state sanitization",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 20,
+      "domain": "Backend security",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/app/core/*.py",
+        "backend/app/routers/*.py"
+      ],
+      "verification_method": "FastAPI dependency injection, session isolation, transaction management",
+      "verdict": "SECURE"
+    },
+    {
+      "id": 21,
+      "domain": "Deployment configuration",
+      "status": "AUDITED",
+      "target_files": [
+        "backend/Dockerfile",
+        "frontend/Dockerfile",
+        "docker-compose.yml"
+      ],
+      "verification_method": "Container image security, multi-stage build check, non-root user and exposed ports audit",
+      "verdict": "SECURE"
+    }
+  ]
+}
