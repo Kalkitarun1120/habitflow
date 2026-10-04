@@ -159,6 +159,28 @@
   box-shadow: 0 4px 18px -1px rgba(16, 185, 129, 0.5);
 }
 
+/* Vibrant Emerald Glow Utilities */
+.glow-emerald {
+  box-shadow: 0 0 14px rgba(53, 200, 107, 0.45), 0 0 4px rgba(53, 200, 107, 0.7);
+}
+
+.glow-emerald-sm {
+  box-shadow: 0 0 8px rgba(53, 200, 107, 0.35);
+}
+
+.glow-emerald-lg {
+  box-shadow: 0 0 24px rgba(53, 200, 107, 0.5), 0 0 8px rgba(53, 200, 107, 0.8);
+}
+
+.glow-today {
+  box-shadow: 0 0 12px rgba(53, 200, 107, 0.45), inset 0 0 6px rgba(53, 200, 107, 0.25);
+}
+
+.glow-card-hover:hover {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 0 15px rgba(53, 200, 107, 0.15);
+  border-color: rgba(53, 200, 107, 0.4);
+}
+
 /* Animated Progress Ring */
 .progress-ring-circle {
   transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -176,6 +198,19 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(53, 200, 107, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(53, 200, 107, 0.6);
+  }
+}
+
+.animate-pulseGlow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
 }
 
 .animate-fadeIn {

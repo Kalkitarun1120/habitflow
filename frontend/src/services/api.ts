@@ -1,6 +1,8 @@
 import axios from 'axios';
 import type {
   AuthResponse,
+  PhoneAuthResponse,
+  PhoneSendOTPResponse,
   User,
   Habit,
   HabitCreateInput,
@@ -11,6 +13,8 @@ import type {
   InsightItem,
   CalendarDayData,
   CalendarDayDetail,
+  WeekCalendarResponse,
+  YearCalendarResponse,
   Category
 } from '../types';
 
@@ -61,12 +65,119 @@ export const authService = {
     const res = await apiClient.post<AuthResponse>('/auth/register', { name, email, password, timezone: userTimezone });
     return res.data;
   },
+  requestSignupOtp: async (name: string, email: string, phone_number: string, password: string, timezone?: string): Promise<{ message: string; expires_in: number; phone_number?: string }> => {
+    const userTimezone = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    const res = await apiClient.post<{ message: string; expires_in: number; phone_number?: string }>('/auth/register/request-otp', {
+      name,
+      email,
+      phone_number,
+      password,
+      timezone: userTimezone,
+    });
+    return res.data;
+  },
+  verifySignupOtp: async (name: string, email: string, phone_number: string, password: string, otp: string, timezone?: string): Promise<AuthResponse> => {
+    const userTimezone = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    const res = await apiClient.post<AuthResponse>('/auth/register/verify-otp', {
+      name,
+      email,
+      phone_number,
+      password,
+      otp,
+      timezone: userTimezone,
+    });
+    return res.data;
+  },
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ message: string }>('/auth/forgot-password', { email });
+    return res.data;
+  },
+  resetPassword: async (email: string, otp: string, new_password: string): Promise<{ message: string }> => {
+    const res = await apiClient.post<{ message: string }>('/auth/reset-password', {
+      email,
+      otp,
+      new_password,
+    });
+    return res.data;
+  },
+  sendPhoneOtp: async (phone_number: string): Promise<PhoneSendOTPResponse> => {
+    const res = await apiClient.post<PhoneSendOTPResponse>('/auth/phone/send-otp', { phone_number });
+    return res.data;
+  },
+  verifyPhoneOtp: async (phone_number: string, otp: string, name?: string, email?: string, password?: string, timezone?: string): Promise<PhoneAuthResponse> => {
+    const userTimezone = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    const res = await apiClient.post<PhoneAuthResponse>('/auth/phone/verify-otp', {
+      phone_number,
+      otp,
+      name,
+      email,
+      password,
+      timezone: userTimezone,
+    });
+    return res.data;
+  },
+  loginWithGoogle: async (credential: string, timezone?: string): Promise<AuthResponse> => {
+    const userTimezone = timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    const res = await apiClient.post<AuthResponse>('/auth/google', {
+      credential,
+      timezone: userTimezone,
+    });
+    return res.data;
+  },
+  linkGoogle: async (credential: string): Promise<User> => {
+    const res = await apiClient.post<User>('/auth/link/google', { credential });
+    return res.data;
+  },
+  linkPhone: async (phone_number: string, otp: string): Promise<User> => {
+    const res = await apiClient.post<User>('/auth/link/phone', { phone_number, otp });
+    return res.data;
+  },
+  unlinkProvider: async (provider: string): Promise<{ message: string; user: User }> => {
+    const res = await apiClient.delete<{ message: string; user: User }>(`/auth/identities/${provider}`);
+    return res.data;
+  },
   getMe: async (): Promise<User> => {
     const res = await apiClient.get<User>('/auth/me');
     return res.data;
   },
   updateProfile: async (data: { name?: string; avatar?: string; timezone?: string }): Promise<User> => {
     const res = await apiClient.put<User>('/auth/profile', data);
+    return res.data;
+  },
+  uploadAvatar: async (file: File): Promise<User> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await apiClient.post<User>('/auth/profile/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return res.data;
+  },
+  requestEmailChange: async (new_email: string): Promise<{ message: string; expires_in: number }> => {
+    const res = await apiClient.post<{ message: string; expires_in: number }>('/auth/profile/request-email-change', {
+      new_email,
+    });
+    return res.data;
+  },
+  verifyEmailChange: async (new_email: string, otp: string): Promise<User> => {
+    const res = await apiClient.post<User>('/auth/profile/verify-email-change', {
+      new_email,
+      otp,
+    });
+    return res.data;
+  },
+  requestPhoneChange: async (new_phone: string): Promise<{ message: string; expires_in: number }> => {
+    const res = await apiClient.post<{ message: string; expires_in: number }>('/auth/profile/request-phone-change', {
+      new_phone,
+    });
+    return res.data;
+  },
+  verifyPhoneChange: async (new_phone: string, otp: string): Promise<User> => {
+    const res = await apiClient.post<User>('/auth/profile/verify-phone-change', {
+      new_phone,
+      otp,
+    });
     return res.data;
   },
   changePassword: async (current_password: string, new_password: string): Promise<{ message: string }> => {
@@ -181,9 +292,21 @@ export const statisticsService = {
 
 // Calendar endpoints
 export const calendarService = {
+  getWeekCalendarData: async (targetDate?: string): Promise<WeekCalendarResponse> => {
+    const res = await apiClient.get<WeekCalendarResponse>('/calendar/week', {
+      params: { target_date: targetDate },
+    });
+    return res.data;
+  },
   getCalendarData: async (year?: number, month?: number): Promise<CalendarDayData[]> => {
     const res = await apiClient.get<CalendarDayData[]>('/calendar', {
       params: { year, month },
+    });
+    return res.data;
+  },
+  getYearCalendarData: async (year?: number, habitId?: number): Promise<YearCalendarResponse> => {
+    const res = await apiClient.get<YearCalendarResponse>('/calendar/year', {
+      params: { year, habit_id: habitId },
     });
     return res.data;
   },

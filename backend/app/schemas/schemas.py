@@ -7,13 +7,114 @@ from pydantic import BaseModel, EmailStr, Field, ConfigDict
 class UserRegister(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
     email: EmailStr
+    phone_number: Optional[str] = Field(None, max_length=30)
     password: str = Field(..., min_length=6)
+    timezone: Optional[str] = "UTC"
+
+
+class RegisterRequestOTPRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    phone_number: str = Field(..., min_length=7, max_length=30)
+    password: str = Field(..., min_length=6)
+    timezone: Optional[str] = "UTC"
+
+
+class RegisterVerifyOTPRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    phone_number: str = Field(..., min_length=7, max_length=30)
+    password: str = Field(..., min_length=6)
+    otp: str = Field(..., min_length=4, max_length=10)
     timezone: Optional[str] = "UTC"
 
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ForgotPasswordResponse(BaseModel):
+    message: str
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    otp: str = Field(..., min_length=4, max_length=10)
+    new_password: str = Field(..., min_length=6)
+
+
+class EmailChangeRequest(BaseModel):
+    new_email: EmailStr
+
+
+class EmailChangeVerifyRequest(BaseModel):
+    new_email: EmailStr
+    otp: str = Field(..., min_length=4, max_length=10)
+
+
+class PhoneChangeRequest(BaseModel):
+    new_phone: str = Field(..., min_length=7, max_length=30)
+
+
+class PhoneChangeVerifyRequest(BaseModel):
+    new_phone: str = Field(..., min_length=7, max_length=30)
+    otp: str = Field(..., min_length=4, max_length=10)
+
+
+class PhoneSendOTPRequest(BaseModel):
+    phone_number: str = Field(..., min_length=7, max_length=30)
+
+
+class PhoneSendOTPResponse(BaseModel):
+    message: str
+    expires_in: int
+
+
+class PhoneVerifyOTPRequest(BaseModel):
+    phone_number: str = Field(..., min_length=7, max_length=30)
+    otp: str = Field(..., min_length=4, max_length=10)
+    name: Optional[str] = Field(None, max_length=100)
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    timezone: Optional[str] = "UTC"
+
+
+class PhoneAuthResponse(BaseModel):
+    access_token: Optional[str] = None
+    token_type: Optional[str] = "bearer"
+    user: Optional[UserResponse] = None
+    needs_registration: bool = False
+    phone_number: Optional[str] = None
+    message: Optional[str] = None
+
+
+class GoogleAuthRequest(BaseModel):
+    credential: str = Field(..., min_length=10)
+    timezone: Optional[str] = "UTC"
+
+
+class LinkPhoneRequest(BaseModel):
+    phone_number: str = Field(..., min_length=7, max_length=30)
+    otp: str = Field(..., min_length=4, max_length=10)
+
+
+class LinkGoogleRequest(BaseModel):
+    credential: str = Field(..., min_length=10)
+
+
+class AuthIdentityResponse(BaseModel):
+    id: int
+    provider: str
+    provider_user_id: str
+    provider_email: Optional[str] = None
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PasswordChange(BaseModel):
@@ -30,9 +131,16 @@ class ProfileUpdate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     name: str
-    email: str
+    email: Optional[str] = None
+    phone_number: Optional[str] = None
     avatar: Optional[str] = None
     timezone: str = "UTC"
+    google_id: Optional[str] = None
+    is_email_verified: bool = False
+    is_phone_verified: bool = False
+    auth_provider: str = "email"
+    has_password: bool = True
+    connected_providers: List[str] = []
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -231,6 +339,63 @@ class WeeklyReport(BaseModel):
     total_completions_week: int
 
 
+class HabitPerformanceItem(BaseModel):
+    habit_id: int
+    name: str
+    category: str = "General"
+    color: str = "#10B981"
+    icon: str = "sparkles"
+    completions_count: int = 0
+    total_scheduled: int = 0
+    completion_rate: float = 0.0
+    current_streak: int = 0
+    longest_streak: int = 0
+    last_completed: Optional[str] = None
+
+
+class HabitWeekDayStatus(BaseModel):
+    date: str
+    day_name: str
+    day_number: int
+    is_today: bool
+    is_future: bool
+    is_scheduled: bool
+    completed: bool
+    skipped: bool
+    value: float = 0.0
+
+
+class HabitWeekStatus(BaseModel):
+    habit_id: int
+    name: str
+    category: str = "General"
+    color: str = "#10B981"
+    icon: str = "sparkles"
+    frequency: str = "daily"
+    current_streak: int = 0
+    longest_streak: int = 0
+    completion_rate: float = 0.0
+    is_paused: bool = False
+    is_scheduled_today: bool = True
+    completed_today: bool = False
+    skipped_today: bool = False
+    days: List[HabitWeekDayStatus] = []
+
+
+class WeekCalendarResponse(BaseModel):
+    start_date: str
+    end_date: str
+    habits: List[HabitWeekStatus] = []
+
+
+class YearCalendarResponse(BaseModel):
+    year: int
+    total_checkins: int
+    total_active_days: int = 0
+    max_streak: int = 0
+    daily_counts: Dict[str, int] = {}
+
+
 class StatisticsResponse(BaseModel):
     total_habits: int
     active_habits: int
@@ -249,6 +414,7 @@ class StatisticsResponse(BaseModel):
     category_performance: List[CategoryPerformance]
     day_of_week_performance: List[DayOfWeekPerformance]
     habit_risks: List[HabitRiskItem]
+    habit_performance: List[HabitPerformanceItem] = []
     weekly_report: Optional[WeeklyReport] = None
 
 

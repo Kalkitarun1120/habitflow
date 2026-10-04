@@ -11,18 +11,62 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String(100), nullable=False)
-    email = Column(String(255), unique=True, index=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=True)
+    phone_number = Column(String(30), unique=True, index=True, nullable=True)
+    password_hash = Column(String(255), nullable=True)
+    google_id = Column(String(255), unique=True, index=True, nullable=True)
     avatar = Column(String(255), nullable=True)
+    is_email_verified = Column(Boolean, default=False)
+    is_phone_verified = Column(Boolean, default=False)
+    auth_provider = Column(String(50), default="email")
     timezone = Column(String(50), default="UTC")
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_login_at = Column(DateTime, nullable=True)
 
     # Relationships
     habits = relationship("Habit", back_populates="user", cascade="all, delete-orphan")
     completions = relationship("HabitCompletion", back_populates="user", cascade="all, delete-orphan")
     categories = relationship("Category", back_populates="user", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    auth_identities = relationship("AuthIdentity", back_populates="user", cascade="all, delete-orphan")
+    otp_verifications = relationship("OTPVerification", back_populates="user", cascade="all, delete-orphan")
+
+
+class AuthIdentity(Base):
+    __tablename__ = "auth_identities"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    provider = Column(String(50), nullable=False)  # "email", "google", "phone"
+    provider_user_id = Column(String(255), nullable=False)  # Google sub, phone number, email
+    provider_email = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    last_used_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (
+        UniqueConstraint("provider", "provider_user_id", name="uq_provider_user_id"),
+    )
+
+    user = relationship("User", back_populates="auth_identities")
+
+
+class OTPVerification(Base):
+    __tablename__ = "otp_verifications"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    phone_number = Column(String(30), nullable=True, index=True)
+    email = Column(String(255), nullable=True, index=True)
+    otp_hash = Column(String(255), nullable=False)
+    purpose = Column(String(50), default="login")  # "signup", "login", "link_phone", "forgot_password", "email_change", "phone_change"
+    expires_at = Column(DateTime, nullable=False)
+    attempts = Column(Integer, default=0)
+    verified = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    used_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="otp_verifications")
 
 
 class Category(Base):

@@ -110,14 +110,14 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   return (
     <div
       onClick={() => onViewHistory && onViewHistory(habit)}
-      className={`relative group bg-white dark:bg-[#0C1E22] border rounded-xl p-4 sm:p-5 transition-all duration-150 cursor-pointer ${
+      className={`relative group bg-[#151719] border rounded-xl p-4 sm:p-5 transition-all duration-150 cursor-pointer ${
         isCompleted
-          ? 'border-emerald-500/50 bg-emerald-50/30 dark:bg-[#0E2F2B]/30'
+          ? 'border-[#35C86B]/60 bg-[#16291E]'
           : isSkipped
-          ? 'border-amber-500/40 bg-amber-50/20 dark:bg-amber-950/20'
+          ? 'border-amber-500/40 bg-amber-950/20'
           : isPaused
-          ? 'border-slate-300 dark:border-slate-800 opacity-70 bg-slate-50 dark:bg-[#07171A]'
-          : 'border-slate-200/90 dark:border-[#16383B] hover:border-emerald-500/40 dark:hover:border-emerald-500/40 shadow-sm'
+          ? 'border-slate-800 opacity-70 bg-[#121416]'
+          : 'border-[#23272D] hover:border-[#35C86B]/50 shadow-sm'
       }`}
     >
       {/* Top row: Icon, Name, Category, Frequency, Menu */}

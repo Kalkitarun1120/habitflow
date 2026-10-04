@@ -19,15 +19,16 @@ def override_get_db():
         db.close()
 
 
-app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
 def setup_db():
     Base.metadata.create_all(bind=engine)
+    app.dependency_overrides[get_db] = override_get_db
     yield
     Base.metadata.drop_all(bind=engine)
+    app.dependency_overrides.pop(get_db, None)
 
 
 def test_register_and_login():
@@ -102,12 +103,15 @@ def test_habit_crud_and_completions():
     assert list_resp.status_code == 200
     assert len(list_resp.json()) == 1
 
+    from datetime import date
+    today_str = date.today().isoformat()
+
     # Complete Habit
     comp_resp = client.post(
         f"/api/habits/{habit_id}/complete",
         headers=headers,
         json={
-            "completion_date": "2026-09-26",
+            "completion_date": today_str,
             "completed": True,
             "value": 5.0,
             "notes": "Ran 5km in park!"
@@ -121,7 +125,7 @@ def test_habit_crud_and_completions():
         f"/api/habits/{habit_id}/complete",
         headers=headers,
         json={
-            "completion_date": "2026-09-26",
+            "completion_date": today_str,
             "completed": True,
             "value": 5.0,
             "notes": "Updated note"

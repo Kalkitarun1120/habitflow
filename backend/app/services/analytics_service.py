@@ -5,7 +5,8 @@ from app.models import Habit, HabitCompletion
 from app.services.streak_service import StreakService
 from app.schemas.schemas import (
     InsightItem, StatisticsResponse, DailyCompletionCount,
-    CategoryPerformance, DayOfWeekPerformance, HabitRiskItem, WeeklyReport
+    CategoryPerformance, DayOfWeekPerformance, HabitRiskItem, WeeklyReport,
+    HabitPerformanceItem
 )
 
 
@@ -256,6 +257,48 @@ class AnalyticsService:
             total_completions_week=len(week_completions)
         )
 
+        # Habit Performance comparison for selected range
+        habit_perf_list: List[HabitPerformanceItem] = []
+        for h in habits:
+            h_all_dates = [c.completion_date for c in all_completions if c.habit_id == h.id]
+            h_range_comps = [c for c in range_completions if c.habit_id == h.id]
+            st = StreakService.calculate_habit_streak(
+                completion_dates=h_all_dates,
+                created_at_date=h.created_at.date() if h.created_at else today,
+                reference_date=today,
+                frequency=h.frequency or "daily"
+            )
+
+            # Count scheduled in range for this habit
+            h_sched_in_range = 0
+            eval_d = start_date
+            while eval_d <= today:
+                if StreakService.is_scheduled_on_date(h.frequency, eval_d):
+                    h_sched_in_range += 1
+                eval_d += timedelta(days=1)
+
+            h_comp_count = len(h_range_comps)
+            h_rate = round((h_comp_count / h_sched_in_range * 100.0), 1) if h_sched_in_range > 0 else (100.0 if h_comp_count > 0 else 0.0)
+            last_comp_date = max(h_all_dates).strftime("%Y-%m-%d") if h_all_dates else None
+
+            habit_perf_list.append(
+                HabitPerformanceItem(
+                    habit_id=h.id,
+                    name=h.name,
+                    category=h.category or "General",
+                    color=h.color or "#10B981",
+                    icon=h.icon or "sparkles",
+                    completions_count=h_comp_count,
+                    total_scheduled=h_sched_in_range,
+                    completion_rate=h_rate,
+                    current_streak=st["current_streak"],
+                    longest_streak=st["longest_streak"],
+                    last_completed=last_comp_date
+                )
+            )
+
+        habit_perf_list.sort(key=lambda x: x.completions_count, reverse=True)
+
         return StatisticsResponse(
             total_habits=total_habits_count,
             active_habits=active_habits_count,
@@ -274,6 +317,7 @@ class AnalyticsService:
             category_performance=cat_performance,
             day_of_week_performance=day_performance_list,
             habit_risks=habit_risks,
+            habit_performance=habit_perf_list,
             weekly_report=weekly_report
         )
 

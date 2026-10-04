@@ -7,6 +7,8 @@ import { ToastProvider } from './components/Toast';
 import { AppLayout } from './layouts/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { HabitsPage } from './pages/HabitsPage';
 import { CalendarPage } from './pages/CalendarPage';
@@ -69,6 +71,22 @@ export const App: React.FC = () => {
                 element={
                   <PublicRoute>
                     <RegisterPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/forgot-password"
+                element={
+                  <PublicRoute>
+                    <ForgotPasswordPage />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/reset-password"
+                element={
+                  <PublicRoute>
+                    <ResetPasswordPage />
                   </PublicRoute>
                 }
               />

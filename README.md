@@ -10,6 +10,11 @@ The application works on **Desktop browsers, Mobile browsers, Tablets**, and as 
 
 ## 🌟 Key Features
 
+- **V2 Multi-Method Authentication**:
+  - **Google OAuth 2.0 / OpenID Connect**: Fast 1-click authentication with verified Google identity token verification.
+  - **Phone Number + OTP Verification**: International E.164 phone support (+91, +1, +44, etc.) with secure cryptographic 6-digit OTP delivery, 60s resend cooldown, attempt limits, and single-use expiry.
+  - **Account Linking & Multi-Identity Management**: Connect Google, Phone, and Email to a single unified HabitFlow account.
+  - **Backward-Compatible Email/Password**: Retains existing bcrypt password support and demo login.
 - **PWA & Mobile-First Responsive Design**: Works seamlessly on desktop (with collapsible sidebar) and mobile (with bottom navigation bar and PWA offline shell).
 - **Streak Engine (`streak_service.py`)**: Precise calculation of active streaks, longest streaks, and completion rates using exact completion logs.
 - **Smart Analytics & Insights (`analytics_service.py`)**: Automatic generation of insights (peak consistency days, habit trends, time optimization tips).
@@ -122,6 +127,42 @@ Visit:
 
 ---
 
+---
+
+## 🔐 V2 Multi-Method Authentication Setup
+
+HabitFlow V2 introduces Google OAuth 2.0 and Phone OTP authentication alongside existing Email/Password authentication.
+
+### 1. Google OAuth 2.0 Setup
+1. Create a project in [Google Cloud Console](https://console.cloud.google.com/).
+2. Set up OAuth 2.0 credentials (Web Application) with authorized JavaScript origin `http://localhost:5173`.
+3. Add credentials to your `.env`:
+   ```env
+   GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   VITE_GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+   ```
+
+### 2. Phone OTP & SMS Setup
+For production SMS delivery, configure Twilio credentials:
+```env
+SMS_PROVIDER=twilio
+TWILIO_ACCOUNT_SID=your-twilio-account-sid
+TWILIO_AUTH_TOKEN=your-twilio-auth-token
+TWILIO_PHONE_NUMBER=+1234567890
+```
+
+### 3. Safe Development OTP Mode (`DEVELOPMENT ONLY`)
+When testing locally without SMS provider charges or credentials, enable Development Mode:
+```env
+OTP_DEV_MODE=true
+```
+- OTP codes are generated normally and logged directly to backend server console.
+- Zero SMS provider charges incurred.
+- Rate limiting, hashing, attempt counters, and expiration timers are fully enforced.
+
+---
+
 ## 🧪 Testing
 
 Run automated pytest backend tests:
@@ -129,6 +170,11 @@ Run automated pytest backend tests:
 cd backend
 .\venv\Scripts\pytest
 ```
+Test coverage includes:
+- Phone OTP generation, cooldowns, attempts, and verification
+- Google OAuth token verification and account creation
+- Account linking, multi-provider association, and safety unlinking
+- Habit CRUD, streaks, history, dashboard, and calendar
 
 ---
 

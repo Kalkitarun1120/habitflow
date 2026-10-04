@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "HabitFlow API"
-    VERSION: str = "1.0.0"
+    VERSION: str = "2.0.0"
     API_V1_STR: str = "/api"
 
     # MySQL Database Config
@@ -32,8 +32,25 @@ class Settings(BaseSettings):
         "http://localhost:4173",
     ]
 
+    # Google OAuth 2.0 / OpenID Connect Config
+    GOOGLE_CLIENT_ID: Optional[str] = None
+    GOOGLE_CLIENT_SECRET: Optional[str] = None
+
+    # SMS / OTP Provider Config (Twilio Verify)
+    SMS_PROVIDER: str = "twilio"  # "twilio" or "console"
+    TWILIO_ACCOUNT_SID: Optional[str] = None
+    TWILIO_AUTH_TOKEN: Optional[str] = None
+    TWILIO_PHONE_NUMBER: Optional[str] = None
+    TWILIO_VERIFY_SERVICE_SID: Optional[str] = None
+
+    # OTP Security Config
+    OTP_EXPIRY_SECONDS: int = 300  # 5 minutes
+    OTP_MAX_ATTEMPTS: int = 5
+    OTP_RESEND_COOLDOWN_SECONDS: int = 60
+    OTP_DEV_MODE: bool = False  # Set to True for local testing without Twilio SMS delivery
+
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "backend/.env", "../.env", os.path.join(os.path.dirname(__file__), "..", "..", ".env")),
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
@@ -42,7 +59,9 @@ class Settings(BaseSettings):
     def get_database_url(self) -> str:
         if self.DATABASE_URL:
             return self.DATABASE_URL
-        return f"mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}?charset=utf8mb4"
+        import urllib.parse
+        encoded_pwd = urllib.parse.quote_plus(self.MYSQL_PASSWORD)
+        return f"mysql+pymysql://{self.MYSQL_USER}:{encoded_pwd}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DATABASE}?charset=utf8mb4"
 
 
 settings = Settings()

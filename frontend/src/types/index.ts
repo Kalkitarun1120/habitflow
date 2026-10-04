@@ -1,10 +1,37 @@
 export interface User {
   id: number;
   name: string;
-  email: string;
+  email?: string;
+  phone_number?: string;
   avatar?: string;
   timezone: string;
+  google_id?: string;
+  is_email_verified?: boolean;
+  is_phone_verified?: boolean;
+  auth_provider?: string;
+  has_password?: boolean;
+  connected_providers?: string[];
   created_at: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
+
+export interface PhoneAuthResponse {
+  access_token?: string;
+  token_type?: string;
+  user?: User;
+  needs_registration?: boolean;
+  phone_number?: string;
+  message?: string;
+}
+
+export interface PhoneSendOTPResponse {
+  message: string;
+  expires_in: number;
 }
 
 export interface Category {
@@ -179,6 +206,63 @@ export interface WeeklyReport {
   best_day?: string;
 }
 
+export interface HabitPerformanceItem {
+  habit_id: number;
+  name: string;
+  category: string;
+  color: string;
+  icon: string;
+  completions_count: number;
+  total_scheduled: number;
+  completion_rate: number;
+  current_streak: number;
+  longest_streak: number;
+  last_completed?: string;
+}
+
+export interface HabitWeekDayStatus {
+  date: string;
+  day_name: string;
+  day_number: number;
+  is_today: boolean;
+  is_future: boolean;
+  is_scheduled: boolean;
+  completed: boolean;
+  skipped: boolean;
+  value: number;
+}
+
+export interface HabitWeekStatus {
+  habit_id: number;
+  name: string;
+  category: string;
+  color: string;
+  icon: string;
+  frequency: string;
+  current_streak: number;
+  longest_streak: number;
+  completion_rate: number;
+  is_paused: boolean;
+  is_scheduled_today: boolean;
+  completed_today: boolean;
+  skipped_today: boolean;
+  days: HabitWeekDayStatus[];
+}
+
+export interface WeekCalendarResponse {
+  start_date: string;
+  end_date: string;
+  habits: HabitWeekStatus[];
+}
+
+export interface YearCalendarResponse {
+  year: number;
+  total_checkins: number;
+  total_active_days?: number;
+  max_streak?: number;
+  daily_counts: Record<string, number>;
+}
+
 export interface StatisticsResponse {
   total_habits: number;
   active_habits: number;
@@ -187,7 +271,11 @@ export interface StatisticsResponse {
   longest_streak: number;
   completion_rate: number;
   most_consistent_habit?: string;
+  most_consistent_habit_rate?: number;
+  needs_attention_habit?: string;
+  needs_attention_rate?: number;
   most_consistent_day?: string;
+  best_time_of_day?: string;
   weekly_chart: DailyCompletionCount[];
   monthly_chart: {
     label: string;
@@ -197,7 +285,10 @@ export interface StatisticsResponse {
   }[];
   category_performance: CategoryPerformance[];
   day_of_week?: DayOfWeekPerformance[];
+  day_of_week_performance?: DayOfWeekPerformance[];
   habits_at_risk?: HabitRiskItem[];
+  habit_risks?: HabitRiskItem[];
+  habit_performance?: HabitPerformanceItem[];
   weekly_report?: WeeklyReport;
 }
 

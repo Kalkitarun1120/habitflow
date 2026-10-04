@@ -9,6 +9,19 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, pass: string) => Promise<void>;
   register: (name: string, email: string, pass: string, timezone?: string) => Promise<void>;
+  sendPhoneOtp: (phone: string) => Promise<number>;
+  verifyPhoneOtp: (phone: string, otp: string, name?: string, email?: string, password?: string) => Promise<any>;
+  loginWithGoogle: (credential: string) => Promise<void>;
+  linkGoogle: (credential: string) => Promise<void>;
+  linkPhone: (phone: string, otp: string) => Promise<void>;
+  unlinkProvider: (provider: string) => Promise<void>;
+  updateProfile: (data: { name?: string; avatar?: string; timezone?: string }) => Promise<User>;
+  uploadAvatar: (file: File) => Promise<User>;
+  changePassword: (currentPass: string, newPass: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<string>;
+  resetPassword: (email: string, otp: string, newPass: string) => Promise<void>;
+  setUser: (user: User | null) => void;
+  refreshUser: () => Promise<void>;
   logout: () => void;
 }
 
@@ -24,36 +37,104 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const refreshUser = async () => {
+    try {
+      const currentUser = await authService.getMe();
+      setUser(currentUser);
+      localStorage.setItem('habitflow_user', JSON.stringify(currentUser));
+    } catch {
+      logout();
+    }
+  };
+
   useEffect(() => {
     const initAuth = async () => {
       if (token) {
-        try {
-          const currentUser = await authService.getMe();
-          setUser(currentUser);
-          localStorage.setItem('habitflow_user', JSON.stringify(currentUser));
-        } catch {
-          logout();
-        }
+        await refreshUser();
       }
       setIsLoading(false);
     };
     initAuth();
   }, [token]);
 
+  const saveAuthSession = (accessToken: string, authUser: User) => {
+    setToken(accessToken);
+    setUser(authUser);
+    localStorage.setItem('habitflow_token', accessToken);
+    localStorage.setItem('habitflow_user', JSON.stringify(authUser));
+  };
+
   const login = async (email: string, pass: string) => {
     const data = await authService.login(email, pass);
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem('habitflow_token', data.access_token);
-    localStorage.setItem('habitflow_user', JSON.stringify(data.user));
+    saveAuthSession(data.access_token, data.user);
   };
 
   const register = async (name: string, email: string, pass: string, timezone?: string) => {
     const data = await authService.register(name, email, pass, timezone);
-    setToken(data.access_token);
-    setUser(data.user);
-    localStorage.setItem('habitflow_token', data.access_token);
-    localStorage.setItem('habitflow_user', JSON.stringify(data.user));
+    saveAuthSession(data.access_token, data.user);
+  };
+
+  const sendPhoneOtp = async (phone: string): Promise<number> => {
+    const data = await authService.sendPhoneOtp(phone);
+    return data.expires_in;
+  };
+
+  const verifyPhoneOtp = async (phone: string, otp: string, name?: string, email?: string, password?: string) => {
+    const data = await authService.verifyPhoneOtp(phone, otp, name, email, password);
+    if (data.access_token && data.user) {
+      saveAuthSession(data.access_token, data.user);
+    }
+    return data;
+  };
+
+  const loginWithGoogle = async (credential: string) => {
+    const data = await authService.loginWithGoogle(credential);
+    saveAuthSession(data.access_token, data.user);
+  };
+
+  const linkGoogle = async (credential: string) => {
+    const updatedUser = await authService.linkGoogle(credential);
+    setUser(updatedUser);
+    localStorage.setItem('habitflow_user', JSON.stringify(updatedUser));
+  };
+
+  const linkPhone = async (phone: string, otp: string) => {
+    const updatedUser = await authService.linkPhone(phone, otp);
+    setUser(updatedUser);
+    localStorage.setItem('habitflow_user', JSON.stringify(updatedUser));
+  };
+
+  const unlinkProvider = async (provider: string) => {
+    const res = await authService.unlinkProvider(provider);
+    setUser(res.user);
+    localStorage.setItem('habitflow_user', JSON.stringify(res.user));
+  };
+
+  const updateProfile = async (data: { name?: string; avatar?: string; timezone?: string }): Promise<User> => {
+    const updated = await authService.updateProfile(data);
+    setUser(updated);
+    localStorage.setItem('habitflow_user', JSON.stringify(updated));
+    return updated;
+  };
+
+  const uploadAvatar = async (file: File): Promise<User> => {
+    const updated = await authService.uploadAvatar(file);
+    setUser(updated);
+    localStorage.setItem('habitflow_user', JSON.stringify(updated));
+    return updated;
+  };
+
+  const changePassword = async (currentPass: string, newPass: string) => {
+    await authService.changePassword(currentPass, newPass);
+  };
+
+  const forgotPassword = async (email: string): Promise<string> => {
+    const res = await authService.forgotPassword(email);
+    return res.message;
+  };
+
+  const resetPassword = async (email: string, otp: string, newPass: string) => {
+    await authService.resetPassword(email, otp, newPass);
   };
 
   const logout = () => {
@@ -72,6 +153,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         login,
         register,
+        sendPhoneOtp,
+        verifyPhoneOtp,
+        loginWithGoogle,
+        linkGoogle,
+        linkPhone,
+        unlinkProvider,
+        updateProfile,
+        uploadAvatar,
+        changePassword,
+        forgotPassword,
+        resetPassword,
+        setUser,
+        refreshUser,
         logout,
       }}
     >

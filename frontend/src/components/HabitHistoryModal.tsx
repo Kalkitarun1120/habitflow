@@ -189,16 +189,16 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
 
                 <div className="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-15 gap-1.5 p-3 rounded-xl bg-slate-50/70 dark:bg-[#07191C]/60 border border-slate-200 dark:border-slate-800">
                   {historyData.days.map((day) => {
-                    let bgClass = 'bg-slate-200/40 dark:bg-slate-800/30 text-slate-400';
+                    let bgClass = 'bg-[#151719] text-slate-500 border border-[#23272D]';
                     let label = 'Off Schedule';
                     if (day.completed) {
-                      bgClass = 'bg-emerald-500 text-white font-bold';
+                      bgClass = 'bg-[#35C86B] text-black font-extrabold border border-[#38E079] shadow-[0_0_8px_rgba(53,200,107,0.55)]';
                       label = 'Completed';
                     } else if (day.skipped) {
-                      bgClass = 'bg-amber-500 text-white font-bold';
+                      bgClass = 'bg-amber-500 text-black font-bold shadow-[0_0_6px_rgba(245,158,11,0.4)]';
                       label = 'Skipped (Preserved)';
                     } else if (day.is_scheduled) {
-                      bgClass = 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30';
+                      bgClass = 'bg-rose-950/30 text-rose-300 border border-rose-900/40';
                       label = 'Scheduled & Missed';
                     }
 
