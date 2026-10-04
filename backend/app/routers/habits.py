@@ -26,13 +26,16 @@ def format_habit_response(habit: Habit, db: Session, target_date: date = None) -
     c_dates = [c.completion_date for c in all_records if c.completed]
     s_dates = [c.completion_date for c in all_records if not c.completed and c.notes == "skipped"]
 
+    is_paused_val = bool(habit.is_paused or not habit.is_active)
+    is_archived_val = bool(habit.is_archived)
+
     streak_data = StreakService.calculate_habit_streak(
         completion_dates=c_dates,
         created_at_date=habit.created_at.date() if habit.created_at else target_date,
         reference_date=target_date,
         frequency=habit.frequency or "daily",
         skipped_dates=s_dates,
-        is_paused=not habit.is_active
+        is_paused=is_paused_val
     )
 
     today_record = (
@@ -57,10 +60,13 @@ def format_habit_response(habit: Habit, db: Session, target_date: date = None) -
         skipped_today=today_skipped,
         today_value=today_val,
         is_scheduled_today=is_sched,
-        is_paused=not habit.is_active
+        is_paused=is_paused_val
     )
 
     res = HabitResponse.model_validate(habit)
+    res.is_paused = is_paused_val
+    res.is_active = not is_paused_val and not is_archived_val
+    res.is_archived = is_archived_val
     res.streak = streak_obj
     return res
 
@@ -70,7 +76,7 @@ def get_habits(
     category: Optional[str] = None,
     search: Optional[str] = None,
     sort_by: Optional[str] = "created_at",
-    status_filter: Optional[str] = "all",  # all, active, paused, completed_today
+    status_filter: Optional[str] = "all",  # all, active, paused, completed_today, archived
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
@@ -87,9 +93,11 @@ def get_habits(
     response_list = [format_habit_response(h, db, today) for h in habits]
 
     if status_filter == "active":
-        response_list = [h for h in response_list if h.is_active]
+        response_list = [h for h in response_list if not h.is_paused and not h.is_archived]
     elif status_filter == "paused":
-        response_list = [h for h in response_list if not h.is_active]
+        response_list = [h for h in response_list if h.is_paused and not h.is_archived]
+    elif status_filter == "archived":
+        response_list = [h for h in response_list if h.is_archived]
     elif status_filter == "completed_today":
         response_list = [h for h in response_list if h.streak and h.streak.completed_today]
 
@@ -124,7 +132,9 @@ def create_habit(
         target_value=habit_in.target_value,
         target_unit=habit_in.target_unit or "times",
         reminder_time=habit_in.reminder_time,
-        is_active=habit_in.is_active
+        is_active=habit_in.is_active if not habit_in.is_paused else False,
+        is_paused=habit_in.is_paused,
+        is_archived=habit_in.is_archived
     )
     db.add(habit)
     db.commit()
@@ -156,8 +166,18 @@ def update_habit(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
 
     update_data = habit_in.model_dump(exclude_unset=True)
+    if "is_paused" in update_data:
+        habit.is_paused = bool(update_data["is_paused"])
+        if "is_active" not in update_data:
+            habit.is_active = not habit.is_paused
+    if "is_active" in update_data:
+        habit.is_active = bool(update_data["is_active"])
+        if "is_paused" not in update_data:
+            habit.is_paused = not habit.is_active
+
     for field, val in update_data.items():
-        setattr(habit, field, val)
+        if field not in ("is_paused", "is_active"):
+            setattr(habit, field, val)
 
     db.commit()
     db.refresh(habit)
@@ -173,6 +193,7 @@ def pause_habit(
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    habit.is_paused = True
     habit.is_active = False
     db.commit()
     db.refresh(habit)
@@ -188,6 +209,7 @@ def resume_habit(
     habit = db.query(Habit).filter(Habit.id == habit_id, Habit.user_id == current_user.id).first()
     if not habit:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Habit not found")
+    habit.is_paused = False
     habit.is_active = True
     db.commit()
     db.refresh(habit)

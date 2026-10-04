@@ -90,8 +90,9 @@ export const HabitsPage: React.FC = () => {
   };
 
   const handlePauseToggle = async (habit: Habit) => {
+    const isPaused = Boolean(habit.is_paused || habit.is_active === false || habit.streak?.is_paused);
     try {
-      if (habit.is_paused) {
+      if (isPaused) {
         await habitService.resumeHabit(habit.id);
         addToast('success', 'Habit Resumed', `"${habit.name}" is active again.`);
       } else {
@@ -161,12 +162,14 @@ export const HabitsPage: React.FC = () => {
 
   // Filter based on selectedStatus
   const displayedHabits = habits.filter((h) => {
+    const isPaused = Boolean(h.is_paused || h.is_active === false || h.streak?.is_paused);
+    const isArchived = Boolean(h.is_archived);
     if (selectedStatus === 'active') {
-      return !h.is_paused && !h.is_archived;
+      return !isPaused && !isArchived;
     } else if (selectedStatus === 'paused') {
-      return h.is_paused && !h.is_archived;
+      return isPaused && !isArchived;
     } else if (selectedStatus === 'archived') {
-      return h.is_archived;
+      return isArchived;
     }
     return true;
   });

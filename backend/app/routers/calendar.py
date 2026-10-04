@@ -72,13 +72,14 @@ def get_week_calendar_data(
     for h in habits:
         c_dates = habit_all_c_dates.get(h.id, [])
         s_dates = habit_all_s_dates.get(h.id, [])
+        is_paused_val = bool(h.is_paused or not h.is_active)
         streak_calc = StreakService.calculate_habit_streak(
             completion_dates=c_dates,
             created_at_date=h.created_at.date() if h.created_at else today,
             reference_date=today,
             frequency=h.frequency or "daily",
             skipped_dates=s_dates,
-            is_paused=not h.is_active
+            is_paused=is_paused_val
         )
 
         today_rec = comp_map.get((h.id, today.strftime("%Y-%m-%d")))
@@ -118,7 +119,7 @@ def get_week_calendar_data(
                 current_streak=streak_calc["current_streak"],
                 longest_streak=streak_calc["longest_streak"],
                 completion_rate=streak_calc["completion_rate"],
-                is_paused=not h.is_active,
+                is_paused=is_paused_val,
                 is_scheduled_today=is_sched_today,
                 completed_today=completed_today,
                 skipped_today=skipped_today,

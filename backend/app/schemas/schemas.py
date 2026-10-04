@@ -182,6 +182,8 @@ class HabitCreate(BaseModel):
     target_unit: str = "times"
     reminder_time: Optional[str] = None
     is_active: bool = True
+    is_paused: bool = False
+    is_archived: bool = False
 
 
 class HabitUpdate(BaseModel):
@@ -195,6 +197,8 @@ class HabitUpdate(BaseModel):
     target_unit: Optional[str] = None
     reminder_time: Optional[str] = None
     is_active: Optional[bool] = None
+    is_paused: Optional[bool] = None
+    is_archived: Optional[bool] = None
 
 
 class HabitStreak(BaseModel):
@@ -222,6 +226,8 @@ class HabitResponse(BaseModel):
     target_unit: str
     reminder_time: Optional[str] = None
     is_active: bool
+    is_paused: bool = False
+    is_archived: bool = False
     created_at: datetime
     updated_at: datetime
     streak: Optional[HabitStreak] = None

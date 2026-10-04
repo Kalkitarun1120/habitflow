@@ -70,8 +70,8 @@ export const HabitCard: React.FC<HabitCardProps> = ({
   const streak = habit.streak;
   const isCompleted = streak?.completed_today || false;
   const isSkipped = streak?.skipped_today || false;
-  const isPaused = habit.is_paused || streak?.is_paused || false;
-  const isArchived = habit.is_archived || false;
+  const isPaused = Boolean(habit.is_paused || habit.is_active === false || streak?.is_paused);
+  const isArchived = Boolean(habit.is_archived);
   const isScheduledToday = habit.is_scheduled_today !== false;
   const currentStreak = streak?.current_streak || 0;
 

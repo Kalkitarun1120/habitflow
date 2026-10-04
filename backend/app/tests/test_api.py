@@ -140,3 +140,32 @@ def test_habit_crud_and_completions():
     dash_data = dash_resp.json()
     assert dash_data["total_habits"] == 1
     assert dash_data["completed_today"] == 1
+
+    # Pause Habit
+    pause_resp = client.post(f"/api/habits/{habit_id}/pause", headers=headers)
+    assert pause_resp.status_code == 200
+    paused_data = pause_resp.json()
+    assert paused_data["is_paused"] is True
+    assert paused_data["is_active"] is False
+    assert paused_data["streak"]["is_paused"] is True
+
+    # Check Habits List filtered by paused
+    paused_list = client.get("/api/habits?status_filter=paused", headers=headers).json()
+    assert len(paused_list) == 1
+    assert paused_list[0]["id"] == habit_id
+    assert paused_list[0]["is_paused"] is True
+
+    # Resume Habit
+    resume_resp = client.post(f"/api/habits/{habit_id}/resume", headers=headers)
+    assert resume_resp.status_code == 200
+    resumed_data = resume_resp.json()
+    assert resumed_data["is_paused"] is False
+    assert resumed_data["is_active"] is True
+    assert resumed_data["streak"]["is_paused"] is False
+
+    # Check Habits List filtered by active
+    active_list = client.get("/api/habits?status_filter=active", headers=headers).json()
+    assert len(active_list) == 1
+    assert active_list[0]["id"] == habit_id
+    assert active_list[0]["is_paused"] is False
+

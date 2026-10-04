@@ -88,8 +88,9 @@ export const DashboardPage: React.FC = () => {
   };
 
   const handlePauseToggle = async (habit: Habit) => {
+    const isPaused = Boolean(habit.is_paused || habit.is_active === false || habit.streak?.is_paused);
     try {
-      if (habit.is_paused) {
+      if (isPaused) {
         await habitService.resumeHabit(habit.id);
         addToast('success', 'Habit Resumed', `"${habit.name}" is active again.`);
       } else {
@@ -159,7 +160,9 @@ export const DashboardPage: React.FC = () => {
   }
 
   const allHabits = data?.habits_today || [];
-  const remainingHabits = allHabits.filter(h => !h.streak?.completed_today && !h.streak?.skipped_today && !h.is_paused);
+  const remainingHabits = allHabits.filter(
+    h => !h.streak?.completed_today && !h.streak?.skipped_today && !h.is_paused && h.is_active !== false && !h.streak?.is_paused
+  );
   const remainingCount = data?.remaining_today !== undefined ? data.remaining_today : remainingHabits.length;
 
   const filteredHabits = allHabits.filter((h) => {
