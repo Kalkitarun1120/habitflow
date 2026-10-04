@@ -45,17 +45,17 @@ export const StatisticsPage: React.FC = () => {
       {/* Analytics Header & Timeframe Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-[#35C86B]" />
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+            <BarChart3 className="w-6 h-6 text-emerald-600 dark:text-[#35C86B]" />
             <span>Statistics</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
             Behavioral patterns, completion trends, and consistency metrics calculated from your real logs.
           </p>
         </div>
 
         {/* Range Filter Buttons */}
-        <div className="inline-flex rounded-xl bg-[#151719] p-1 border border-[#23272D] self-start sm:self-auto shadow-sm">
+        <div className="inline-flex rounded-xl bg-slate-100 dark:bg-[#151719] p-1 border border-slate-200 dark:border-[#23272D] self-start sm:self-auto shadow-xs">
           {[
             { id: '7d', label: '7D' },
             { id: '30d', label: '30D' },
@@ -67,10 +67,10 @@ export const StatisticsPage: React.FC = () => {
                 key={item.id}
                 type="button"
                 onClick={() => setRange(item.id as any)}
-                className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-white text-black shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-extrabold'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
                 aria-pressed={isSelected}
               >
@@ -105,10 +105,10 @@ export const StatisticsPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Category Breakdown */}
               {categoryPerformance.length > 0 && (
-                <div className="bg-[#151719] border border-[#23272D] rounded-2xl p-5 space-y-3.5 shadow-sm">
+                <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-5 space-y-3.5 shadow-xs dark:shadow-sm transition-colors">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-                      <PieIcon className="w-4 h-4 text-[#35C86B]" />
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                      <PieIcon className="w-4 h-4 text-emerald-600 dark:text-[#35C86B]" />
                       <span>Category Distribution</span>
                     </h3>
                   </div>
@@ -117,19 +117,19 @@ export const StatisticsPage: React.FC = () => {
                     {categoryPerformance.map((cat, idx) => (
                       <div key={idx} className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-semibold text-slate-300">
+                          <span className="font-semibold text-slate-700 dark:text-slate-300">
                             {cat.category}
                           </span>
-                          <span className="text-slate-400 font-bold">
+                          <span className="text-slate-500 dark:text-slate-400 font-bold">
                             {cat.completion_rate}% ({cat.habit_count} {cat.habit_count === 1 ? 'habit' : 'habits'})
                           </span>
                         </div>
-                        <div className="w-full h-2.5 bg-[#121416] rounded-full overflow-hidden border border-[#23272D]">
+                        <div className="w-full h-2.5 bg-slate-100 dark:bg-[#121416] rounded-full overflow-hidden border border-slate-200 dark:border-[#23272D]">
                           <div
                             className="h-full rounded-full transition-all duration-300"
                             style={{
                               width: `${Math.max(cat.completion_rate, 4)}%`,
-                              backgroundColor: cat.color || '#35C86B',
+                              backgroundColor: cat.color || '#10B981',
                             }}
                           />
                         </div>
@@ -141,9 +141,9 @@ export const StatisticsPage: React.FC = () => {
 
               {/* Day of Week Consistency */}
               {dayOfWeekStats.length > 0 && (
-                <div className="bg-[#151719] border border-[#23272D] rounded-2xl p-5 space-y-3.5 shadow-sm">
+                <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-5 space-y-3.5 shadow-xs dark:shadow-sm transition-colors">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-amber-500" />
                       <span>Day-of-Week Consistency</span>
                     </h3>
@@ -155,19 +155,19 @@ export const StatisticsPage: React.FC = () => {
                       return (
                         <div
                           key={idx}
-                          className="bg-[#1B1D20] border border-[#2A2E35] rounded-xl p-2 flex flex-col justify-between items-center gap-1.5"
+                          className="bg-slate-50 dark:bg-[#1B1D20] border border-slate-200 dark:border-[#2A2E35] rounded-xl p-2 flex flex-col justify-between items-center gap-1.5"
                         >
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">
+                          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">
                             {dow.day_name.slice(0, 3)}
                           </span>
-                          <div className="w-full h-12 bg-[#121416] rounded-md overflow-hidden flex flex-col justify-end p-0.5">
+                          <div className="w-full h-12 bg-slate-200/60 dark:bg-[#121416] rounded-md overflow-hidden flex flex-col justify-end p-0.5">
                             <div
-                              className="w-full bg-[#35C86B] rounded-sm transition-all duration-300 shadow-[0_0_6px_rgba(53,200,107,0.4)]"
+                              className="w-full bg-emerald-500 dark:bg-[#35C86B] rounded-xs transition-all duration-300 shadow-xs"
                               style={{ height: `${Math.max(rate, 8)}%` }}
                               title={`${dow.day_name}: ${rate}%`}
                             />
                           </div>
-                          <span className="text-[10px] font-black text-slate-200">
+                          <span className="text-[10px] font-black text-slate-800 dark:text-slate-200">
                             {rate}%
                           </span>
                         </div>

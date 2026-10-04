@@ -74,20 +74,20 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
   }
 
   return (
-    <div className="bg-[#151719] border border-[#23272D] rounded-xl p-5 sm:p-6 shadow-sm space-y-4">
+    <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-5 sm:p-6 shadow-xs dark:shadow-sm space-y-4 transition-colors">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
             Habit Comparison
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Cross-habit breakdown across completion counts, success rates, and streak momentum
           </p>
         </div>
 
-        <div className="text-xs text-slate-400">
-          Showing <span className="font-bold text-white">{sortedItems.length}</span> habits
+        <div className="text-xs text-slate-500 dark:text-slate-400">
+          Showing <span className="font-bold text-slate-900 dark:text-white">{sortedItems.length}</span> habits
         </div>
       </div>
 
@@ -95,10 +95,10 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
       <div className="hidden sm:block overflow-x-auto">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="border-b border-[#23272D] text-slate-400 font-bold uppercase tracking-wider">
+            <tr className="border-b border-slate-200 dark:border-[#23272D] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
               <th
                 onClick={() => handleSort('name')}
-                className="pb-3 pr-4 cursor-pointer hover:text-white transition-colors"
+                className="pb-3 pr-4 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors"
               >
                 <div className="flex items-center gap-1">
                   <span>Habit</span>
@@ -107,7 +107,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
               </th>
               <th
                 onClick={() => handleSort('completions')}
-                className="pb-3 px-4 cursor-pointer hover:text-white transition-colors text-right"
+                className="pb-3 px-4 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-right"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Completions</span>
@@ -116,7 +116,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
               </th>
               <th
                 onClick={() => handleSort('rate')}
-                className="pb-3 px-4 cursor-pointer hover:text-white transition-colors text-right"
+                className="pb-3 px-4 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-right"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Rate</span>
@@ -125,7 +125,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
               </th>
               <th
                 onClick={() => handleSort('current_streak')}
-                className="pb-3 px-4 cursor-pointer hover:text-white transition-colors text-right"
+                className="pb-3 px-4 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-right"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Current Streak</span>
@@ -134,7 +134,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
               </th>
               <th
                 onClick={() => handleSort('longest_streak')}
-                className="pb-3 pl-4 cursor-pointer hover:text-white transition-colors text-right"
+                className="pb-3 pl-4 cursor-pointer hover:text-slate-900 dark:hover:text-white transition-colors text-right"
               >
                 <div className="flex items-center justify-end gap-1">
                   <span>Best Streak</span>
@@ -143,11 +143,11 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#23272D]/60 font-medium">
+          <tbody className="divide-y divide-slate-200/80 dark:divide-[#23272D]/60 font-medium">
             {sortedItems.map((habit) => {
               const Icon = ICON_MAP[habit.icon] || Sparkles;
               return (
-                <tr key={habit.habit_id} className="hover:bg-[#1B1D20]/50 transition-colors">
+                <tr key={habit.habit_id} className="hover:bg-slate-50 dark:hover:bg-[#1B1D20]/50 transition-colors">
                   {/* Habit identity */}
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2.5 min-w-0">
@@ -158,10 +158,10 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
                         <Icon className="w-3.5 h-3.5" />
                       </div>
                       <div className="min-w-0">
-                        <span className="font-bold text-white block truncate">
+                        <span className="font-bold text-slate-900 dark:text-white block truncate">
                           {habit.name}
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400">
                           {habit.category}
                         </span>
                       </div>
@@ -170,10 +170,10 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
 
                   {/* Completions */}
                   <td className="py-3 px-4 text-right">
-                    <span className="font-bold text-white">
+                    <span className="font-bold text-slate-900 dark:text-white">
                       {habit.completions_count}
                     </span>
-                    <span className="text-[10px] text-slate-500 block">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
                       of {habit.total_scheduled}
                     </span>
                   </td>
@@ -183,10 +183,10 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
                     <span
                       className={`inline-block font-extrabold ${
                         habit.completion_rate >= 80
-                          ? 'text-[#35C86B]'
+                          ? 'text-emerald-600 dark:text-[#35C86B]'
                           : habit.completion_rate >= 50
-                          ? 'text-amber-400'
-                          : 'text-slate-300'
+                          ? 'text-amber-500 dark:text-amber-400'
+                          : 'text-slate-600 dark:text-slate-300'
                       }`}
                     >
                       {habit.completion_rate}%
@@ -195,7 +195,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
 
                   {/* Current Streak */}
                   <td className="py-3 px-4 text-right">
-                    <div className="inline-flex items-center gap-1 font-bold text-slate-200">
+                    <div className="inline-flex items-center gap-1 font-bold text-slate-800 dark:text-slate-200">
                       <Flame className="w-3.5 h-3.5 text-amber-500" />
                       <span>{habit.current_streak}d</span>
                     </div>
@@ -203,8 +203,8 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
 
                   {/* Best Streak */}
                   <td className="py-3 pl-4 text-right">
-                    <div className="inline-flex items-center gap-1 font-bold text-indigo-300">
-                      <Award className="w-3.5 h-3.5 text-indigo-400" />
+                    <div className="inline-flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-300">
+                      <Award className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
                       <span>{habit.longest_streak}d</span>
                     </div>
                   </td>
@@ -218,13 +218,13 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
       {/* Mobile Responsive Cards (Visible only on mobile) */}
       <div className="sm:hidden space-y-2.5">
         {/* Mobile Sort Selector */}
-        <div className="flex items-center justify-between bg-[#1B1D20] p-2 rounded-lg text-xs">
-          <span className="text-slate-400 font-medium">Sort by:</span>
+        <div className="flex items-center justify-between bg-slate-100 dark:bg-[#1B1D20] p-2 rounded-xl text-xs">
+          <span className="text-slate-500 dark:text-slate-400 font-medium">Sort by:</span>
           <div className="flex items-center gap-1">
             <select
               value={sortField}
               onChange={(e) => setSortField(e.target.value as SortField)}
-              className="bg-[#151719] border border-[#23272D] rounded-md px-2 py-1 text-slate-200 font-semibold focus:outline-none"
+              className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-md px-2 py-1 text-slate-800 dark:text-slate-200 font-semibold focus:outline-none"
             >
               <option value="completions">Completions</option>
               <option value="rate">Completion Rate</option>
@@ -235,7 +235,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
             <button
               type="button"
               onClick={() => setSortAsc(!sortAsc)}
-              className="p-1 text-slate-300 bg-[#151719] rounded-md border border-[#23272D]"
+              className="p-1 text-slate-600 dark:text-slate-300 bg-white dark:bg-[#151719] rounded-md border border-slate-200 dark:border-[#23272D]"
               title="Toggle sort direction"
             >
               <ArrowUpDown className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
           return (
             <div
               key={habit.habit_id}
-              className="bg-[#1B1D20] border border-[#2A2E35] rounded-xl p-3.5 space-y-3 shadow-xs"
+              className="bg-slate-50 dark:bg-[#1B1D20] border border-slate-200 dark:border-[#2A2E35] rounded-2xl p-3.5 space-y-3 shadow-xs"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -259,32 +259,32 @@ export const HabitComparisonTable: React.FC<HabitComparisonTableProps> = ({ item
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-bold text-white text-xs truncate">
+                    <h3 className="font-bold text-slate-900 dark:text-white text-xs truncate">
                       {habit.name}
                     </h3>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">
                       {habit.category}
                     </span>
                   </div>
                 </div>
 
-                <span className="text-xs font-black text-[#35C86B]">
+                <span className="text-xs font-black text-emerald-600 dark:text-[#35C86B]">
                   {habit.completions_count} check-ins
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#23272D] text-center text-xs">
-                <div className="bg-[#151719] p-1.5 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block font-semibold">Rate</span>
-                  <span className="font-extrabold text-white">{habit.completion_rate}%</span>
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-[#23272D] text-center text-xs">
+                <div className="bg-white dark:bg-[#151719] p-1.5 rounded-lg border border-slate-200/60 dark:border-transparent">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">Rate</span>
+                  <span className="font-extrabold text-slate-900 dark:text-white">{habit.completion_rate}%</span>
                 </div>
-                <div className="bg-[#151719] p-1.5 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block font-semibold">Streak</span>
-                  <span className="font-extrabold text-amber-400">{habit.current_streak}d</span>
+                <div className="bg-white dark:bg-[#151719] p-1.5 rounded-lg border border-slate-200/60 dark:border-transparent">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">Streak</span>
+                  <span className="font-extrabold text-amber-500">{habit.current_streak}d</span>
                 </div>
-                <div className="bg-[#151719] p-1.5 rounded-lg">
-                  <span className="text-[10px] text-slate-400 block font-semibold">Best</span>
-                  <span className="font-extrabold text-indigo-300">{habit.longest_streak}d</span>
+                <div className="bg-white dark:bg-[#151719] p-1.5 rounded-lg border border-slate-200/60 dark:border-transparent">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-semibold">Best</span>
+                  <span className="font-extrabold text-indigo-600 dark:text-indigo-300">{habit.longest_streak}d</span>
                 </div>
               </div>
             </div>

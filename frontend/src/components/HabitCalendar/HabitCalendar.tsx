@@ -252,15 +252,15 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Controls: Title / Filter & View Switcher */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#151719] border border-[#23272D] rounded-2xl p-4 sm:p-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-sm transition-colors">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#35C86B]/15 text-[#35C86B] flex items-center justify-center">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-[#35C86B]/15 text-emerald-600 dark:text-[#35C86B] flex items-center justify-center">
               <CalendarIcon className="w-4.5 h-4.5" />
             </div>
             <span>Habits Calendar</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Complete habit consistency and compliance tracking across weeks, months, and years.
           </p>
         </div>
@@ -274,7 +274,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                 const val = e.target.value;
                 setSelectedHabitId(val === 'all' ? 'all' : Number(val));
               }}
-              className="px-3 py-2 rounded-xl bg-[#1D2024] hover:bg-[#23272D] text-xs font-semibold text-slate-200 border border-[#282B32] focus:outline-none focus:border-[#35C86B] cursor-pointer transition-colors"
+              className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-[#1D2024] hover:bg-slate-200 dark:hover:bg-[#23272D] text-xs font-semibold text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#282B32] focus:outline-none focus:border-emerald-500 dark:focus:border-[#35C86B] cursor-pointer transition-colors"
               aria-label="Filter calendar by habit"
             >
               <option value="all">All Habits ({habitsList.length})</option>
@@ -286,7 +286,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
             </select>
           )}
 
-          <div className="inline-flex rounded-xl bg-[#1D2024] p-1 border border-[#282B32] shadow-xs">
+          <div className="inline-flex rounded-xl bg-slate-100 dark:bg-[#1D2024] p-1 border border-slate-200 dark:border-[#282B32] shadow-xs">
             {(
               [
                 { id: 'week', label: 'Week' },
@@ -302,8 +302,8 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-white text-black shadow-md'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-extrabold'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                   aria-pressed={isSelected}
                 >
@@ -384,12 +384,12 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
 
       {/* Interactive Day Detail Modal */}
       {selectedDayDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-fadeIn">
-          <div className="bg-[#151719] border border-[#23272D] rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto transition-colors">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#23272D] pb-3">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-[#23272D] pb-3">
               <div>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   {(() => {
                     try {
                       return new Date(selectedDayDetail.date + 'T00:00:00').toLocaleDateString('en-US', {
@@ -404,11 +404,11 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                   })()}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-slate-400 font-medium">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                     {selectedDayDetail.completed_count} of {selectedDayDetail.total_scheduled} completed
                   </span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-xs font-bold text-[#35C86B]">
+                  <span className="text-slate-400 dark:text-slate-600">•</span>
+                  <span className="text-xs font-bold text-emerald-600 dark:text-[#35C86B]">
                     {selectedDayDetail.completion_rate}% compliance
                   </span>
                 </div>
@@ -417,7 +417,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
               <button
                 type="button"
                 onClick={() => setSelectedDayDetail(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#1B1D20] transition-colors"
+                className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-[#1B1D20] transition-colors"
                 aria-label="Close day detail modal"
               >
                 <X className="w-5 h-5" />
@@ -434,34 +434,34 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                 selectedDayDetail.habits.map((h) => (
                   <div
                     key={h.habit_id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-[#1B1D20] border border-[#2A2E35] gap-3"
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#1B1D20] border border-slate-200 dark:border-[#2A2E35] gap-3 transition-colors"
                   >
                     <div
                       className="min-w-0 cursor-pointer flex-1"
                       onClick={() => handleOpenHabitHistory(h.habit_id)}
                     >
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white truncate">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                           {h.habit_name || (h as any).name || 'Habit'}
                         </span>
-                        <span className="text-[10px] uppercase font-semibold px-1.5 py-0.2 rounded-full bg-[#151719] text-slate-400 border border-[#23272D]">
+                        <span className="text-[10px] uppercase font-semibold px-1.5 py-0.2 rounded-full bg-white dark:bg-[#151719] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-[#23272D]">
                           {h.category}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5">
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
                         <span
                           className={`font-semibold ${
                             h.completed
-                              ? 'text-[#35C86B]'
+                              ? 'text-emerald-600 dark:text-[#35C86B]'
                               : h.skipped
-                              ? 'text-amber-400'
+                              ? 'text-amber-500 dark:text-amber-400'
                               : 'text-slate-500'
                           }`}
                         >
                           {h.completed ? 'Completed ✓' : h.skipped ? 'Skipped' : 'Not completed'}
                         </span>
                         <span>•</span>
-                        <span className="text-slate-400 hover:underline">View History →</span>
+                        <span className="text-slate-500 dark:text-slate-400 hover:underline">View History →</span>
                       </div>
                     </div>
 
@@ -471,7 +471,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                         <button
                           type="button"
                           onClick={() => handleDayAction(h.habit_id, 'undo')}
-                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-300 hover:text-white bg-[#151719] hover:bg-[#23272D] rounded-lg border border-[#2A2E35] flex items-center gap-1 transition-colors"
+                          className="px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#151719] hover:bg-slate-100 dark:hover:bg-[#23272D] rounded-lg border border-slate-200 dark:border-[#2A2E35] flex items-center gap-1 transition-colors"
                           title="Undo completion"
                         >
                           <Undo2 className="w-3 h-3" />
@@ -482,7 +482,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                           <button
                             type="button"
                             onClick={() => handleDayAction(h.habit_id, 'complete')}
-                            className="px-2.5 py-1 text-[11px] font-bold text-black bg-[#35C86B] hover:brightness-110 rounded-lg flex items-center gap-1 transition-colors"
+                            className="px-2.5 py-1 text-[11px] font-bold text-white dark:text-black bg-emerald-600 dark:bg-[#35C86B] hover:brightness-110 rounded-lg flex items-center gap-1 transition-colors shadow-xs"
                           >
                             <Check className="w-3 h-3 stroke-[3]" />
                             <span>Done</span>
@@ -491,7 +491,7 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                             <button
                               type="button"
                               onClick={() => handleDayAction(h.habit_id, 'skip')}
-                              className="px-2 py-1 text-[11px] font-semibold text-slate-400 hover:text-amber-300 bg-[#151719] hover:bg-amber-950/30 rounded-lg border border-[#2A2E35] transition-colors"
+                              className="px-2 py-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 bg-white dark:bg-[#151719] hover:bg-amber-50 dark:hover:bg-amber-950/30 rounded-lg border border-slate-200 dark:border-[#2A2E35] transition-colors"
                               title="Skip habit for today"
                             >
                               <FastForward className="w-3 h-3" />

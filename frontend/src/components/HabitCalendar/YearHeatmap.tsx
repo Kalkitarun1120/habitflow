@@ -162,23 +162,23 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
 
   const getCellColor = (count: number) => {
     if (count === 0) {
-      return 'bg-[#202326] border border-transparent hover:border-slate-500';
+      return 'bg-slate-100 dark:bg-[#202326] border border-slate-200/70 dark:border-transparent hover:border-slate-400 dark:hover:border-slate-500';
     }
     const ratio = count / maxCount;
     if (ratio >= 0.75 || count >= 4) {
-      // Level 4: Neon Green Glow
-      return 'bg-[#39D353] border-[#39D353] text-black shadow-[0_0_8px_rgba(57,211,83,0.7)] hover:shadow-[0_0_14px_rgba(57,211,83,0.95)] hover:scale-125 z-10';
+      // Level 4
+      return 'bg-emerald-500 dark:bg-[#39D353] border-emerald-500 dark:border-[#39D353] text-white dark:text-black shadow-xs dark:shadow-[0_0_8px_rgba(57,211,83,0.7)] hover:shadow-md dark:hover:shadow-[0_0_14px_rgba(57,211,83,0.95)] hover:scale-125 z-10';
     }
     if (ratio >= 0.5 || count >= 3) {
-      // Level 3: Bright Green
-      return 'bg-[#26A641] border-[#26A641] text-white shadow-[0_0_5px_rgba(38,166,65,0.5)] hover:shadow-[0_0_10px_rgba(38,166,65,0.8)] hover:scale-125 z-10';
+      // Level 3
+      return 'bg-emerald-600 dark:bg-[#26A641] border-emerald-600 dark:border-[#26A641] text-white shadow-xs dark:shadow-[0_0_5px_rgba(38,166,65,0.5)] hover:scale-125 z-10';
     }
     if (ratio >= 0.25 || count >= 2) {
-      // Level 2: Medium Green
-      return 'bg-[#006D32] border-[#006D32] text-white shadow-[0_0_3px_rgba(0,109,50,0.35)] hover:scale-125 z-10';
+      // Level 2
+      return 'bg-emerald-700 dark:bg-[#006D32] border-emerald-700 dark:border-[#006D32] text-white hover:scale-125 z-10';
     }
-    // Level 1: Dark Pine Green
-    return 'bg-[#0E4429] border-[#0E4429] text-white hover:scale-125 z-10';
+    // Level 1
+    return 'bg-emerald-800 dark:bg-[#0E4429] border-emerald-800 dark:border-[#0E4429] text-white hover:scale-125 z-10';
   };
 
   const handleRangeChange = (val: string) => {
@@ -193,26 +193,26 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
   };
 
   return (
-    <div className="bg-[#151719] dark:bg-[#151719] border border-[#23272D] dark:border-[#23272D] rounded-2xl p-5 sm:p-6 space-y-4 shadow-sm transition-all">
+    <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs dark:shadow-sm transition-colors">
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Left: Total Submissions Counter with tooltip */}
         <div className="flex items-center gap-2">
-          <h2 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-            <span className="font-extrabold text-white text-lg sm:text-xl">
+          <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
+            <span className="font-extrabold text-slate-900 dark:text-white text-lg sm:text-xl">
               {totalCheckins}
             </span>
-            <span className="text-slate-300 font-medium">
+            <span className="text-slate-600 dark:text-slate-300 font-medium">
               {selectedRange === 'current'
                 ? 'submissions in the past one year'
                 : `submissions in ${selectedRange}`}
             </span>
           </h2>
           <div className="relative group cursor-pointer" title="Verified habit completion entries recorded in database">
-            <Info className="w-3.5 h-3.5 text-slate-500 hover:text-slate-300 transition-colors" />
+            <Info className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" />
           </div>
           {habitName && (
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#1B1D20] text-[#35C86B] border border-[#2A2E35] font-semibold ml-1">
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-[#1B1D20] text-emerald-600 dark:text-[#35C86B] border border-slate-200 dark:border-[#2A2E35] font-semibold ml-1">
               {habitName}
             </span>
           )}
@@ -220,14 +220,14 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
 
         {/* Right Stats & Timeframe Dropdown */}
         <div className="flex items-center gap-4 text-xs">
-          <div className="flex items-center gap-1.5 text-slate-400">
+          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
             <span>Total active days:</span>
-            <span className="font-bold text-slate-100">{totalActiveDays}</span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">{totalActiveDays}</span>
           </div>
 
-          <div className="flex items-center gap-1.5 text-slate-400">
+          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
             <span>Max streak:</span>
-            <span className="font-bold text-slate-100">{maxStreak}</span>
+            <span className="font-bold text-slate-900 dark:text-slate-100">{maxStreak}</span>
           </div>
 
           {/* Year/Timeframe Dropdown */}
@@ -235,7 +235,7 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
             <select
               value={selectedRange}
               onChange={(e) => handleRangeChange(e.target.value)}
-              className="appearance-none bg-[#202327] hover:bg-[#282B30] text-slate-200 text-xs font-semibold py-1.5 pl-3 pr-7 rounded-lg border border-[#2E3238] focus:outline-none focus:border-[#35C86B] cursor-pointer transition-all"
+              className="appearance-none bg-slate-100 dark:bg-[#202327] hover:bg-slate-200 dark:hover:bg-[#282B30] text-slate-800 dark:text-slate-200 text-xs font-semibold py-1.5 pl-3 pr-7 rounded-lg border border-slate-200 dark:border-[#2E3238] focus:outline-none focus:border-emerald-500 dark:focus:border-[#35C86B] cursor-pointer transition-all"
               aria-label="Select heatmap period"
             >
               <option value="current">Current</option>
@@ -243,7 +243,7 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
               <option value={currentYear - 1}>{currentYear - 1}</option>
               <option value={currentYear - 2}>{currentYear - 2}</option>
             </select>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 absolute right-2 top-2.5 pointer-events-none" />
           </div>
         </div>
       </div>
@@ -278,7 +278,7 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
                             day.count
                           )} ${
                             day.isToday
-                              ? 'ring-1.5 ring-white/90 ring-offset-1 ring-offset-[#151719]'
+                              ? 'ring-1.5 ring-slate-900 dark:ring-white/90 ring-offset-1 ring-offset-white dark:ring-offset-[#151719]'
                               : ''
                           }`}
                           title={`${day.count} submissions on ${day.date}`}
@@ -291,7 +291,7 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
               </div>
 
               {/* Month Label directly underneath each month block */}
-              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 select-none text-center">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 dark:text-slate-400 select-none text-center">
                 {block.monthName}
               </span>
             </div>
@@ -300,11 +300,11 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
       </div>
 
       {/* Hover Status Bar / Legend */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-[#23272D] text-xs text-slate-400">
-        <div className="text-[11px] font-medium text-slate-400 min-h-[18px]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-[#23272D] text-xs text-slate-500 dark:text-slate-400">
+        <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400 min-h-[18px]">
           {hoveredCell ? (
-            <span className="text-white font-semibold">
-              <span className="text-[#39D353] font-bold">{hoveredCell.count}</span> check-in{hoveredCell.count === 1 ? '' : 's'} on{' '}
+            <span className="text-slate-900 dark:text-white font-semibold">
+              <span className="text-emerald-600 dark:text-[#39D353] font-bold">{hoveredCell.count}</span> check-in{hoveredCell.count === 1 ? '' : 's'} on{' '}
               {new Date(hoveredCell.date + 'T00:00:00').toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
@@ -317,15 +317,15 @@ export const YearHeatmap: React.FC<YearHeatmapProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5 text-[11px]">
-          <span className="text-slate-500">Less</span>
+          <span className="text-slate-400 dark:text-slate-500">Less</span>
           <div className="flex items-center gap-1">
-            <span className="w-3 h-3 rounded-[2.5px] bg-[#202326] border border-transparent" title="0" />
-            <span className="w-3 h-3 rounded-[2.5px] bg-[#0E4429]" title="1" />
-            <span className="w-3 h-3 rounded-[2.5px] bg-[#006D32]" title="2" />
-            <span className="w-3 h-3 rounded-[2.5px] bg-[#26A641]" title="3" />
-            <span className="w-3 h-3 rounded-[2.5px] bg-[#39D353] shadow-[0_0_6px_rgba(57,211,83,0.7)]" title="4+" />
+            <span className="w-3 h-3 rounded-[2.5px] bg-slate-100 dark:bg-[#202326] border border-slate-200 dark:border-transparent" title="0" />
+            <span className="w-3 h-3 rounded-[2.5px] bg-emerald-800 dark:bg-[#0E4429]" title="1" />
+            <span className="w-3 h-3 rounded-[2.5px] bg-emerald-700 dark:bg-[#006D32]" title="2" />
+            <span className="w-3 h-3 rounded-[2.5px] bg-emerald-600 dark:bg-[#26A641]" title="3" />
+            <span className="w-3 h-3 rounded-[2.5px] bg-emerald-500 dark:bg-[#39D353] shadow-xs dark:shadow-[0_0_6px_rgba(57,211,83,0.7)]" title="4+" />
           </div>
-          <span className="text-slate-500">More</span>
+          <span className="text-slate-400 dark:text-slate-500">More</span>
         </div>
       </div>
     </div>

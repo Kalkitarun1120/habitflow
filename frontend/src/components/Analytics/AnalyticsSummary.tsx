@@ -15,57 +15,57 @@ export const AnalyticsSummary: React.FC<AnalyticsSummaryProps> = ({ stats }) => 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {/* Total Check-ins */}
-      <div className="bg-[#151719] border border-[#23272D] rounded-xl p-4 sm:p-5 shadow-sm space-y-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-          <CheckCircle2 className="w-3.5 h-3.5 text-[#35C86B]" />
+      <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-sm space-y-1 transition-colors">
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-[#35C86B]" />
           <span>Total Check-ins</span>
         </span>
-        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
           {totalCompletions.toLocaleString()}
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
           Verified completions
         </p>
       </div>
 
       {/* Current Streak */}
-      <div className="bg-[#151719] border border-[#23272D] rounded-xl p-4 sm:p-5 shadow-sm space-y-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+      <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-sm space-y-1 transition-colors">
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
           <Flame className="w-3.5 h-3.5 text-amber-500" />
           <span>Current Streak</span>
         </span>
-        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          {currentStreak} <span className="text-sm font-semibold text-slate-400">{currentStreak === 1 ? 'day' : 'days'}</span>
+        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          {currentStreak} <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">{currentStreak === 1 ? 'day' : 'days'}</span>
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
           Active momentum
         </p>
       </div>
 
       {/* Best Streak */}
-      <div className="bg-[#151719] border border-[#23272D] rounded-xl p-4 sm:p-5 shadow-sm space-y-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-          <Award className="w-3.5 h-3.5 text-indigo-400" />
+      <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-sm space-y-1 transition-colors">
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <Award className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
           <span>Best Streak</span>
         </span>
-        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          {longestStreak} <span className="text-sm font-semibold text-slate-400">{longestStreak === 1 ? 'day' : 'days'}</span>
+        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          {longestStreak} <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">{longestStreak === 1 ? 'day' : 'days'}</span>
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
           Personal record
         </p>
       </div>
 
       {/* Completion Rate */}
-      <div className="bg-[#151719] border border-[#23272D] rounded-xl p-4 sm:p-5 shadow-sm space-y-1">
-        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-          <TrendingUp className="w-3.5 h-3.5 text-[#35C86B]" />
+      <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-4 sm:p-5 shadow-xs dark:shadow-sm space-y-1 transition-colors">
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+          <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-[#35C86B]" />
           <span>Completion Rate</span>
         </span>
-        <div className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
           {completionRate}%
         </div>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">
           Schedule compliance
         </p>
       </div>

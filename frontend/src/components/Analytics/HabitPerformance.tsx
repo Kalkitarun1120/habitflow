@@ -75,7 +75,7 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
 
   if (!items || items.length === 0) {
     return (
-      <div className="bg-[#151719] border border-[#23272D] rounded-xl p-8 text-center text-slate-400 text-sm">
+      <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-8 text-center text-slate-500 dark:text-slate-400 text-sm transition-colors">
         No habit completion logs available in this timeframe.
       </div>
     );
@@ -84,13 +84,13 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
   const ActiveIcon = activeHabit ? ICON_MAP[activeHabit.icon] || Sparkles : Sparkles;
 
   return (
-    <div className="bg-[#151719] border border-[#23272D] rounded-xl p-5 sm:p-6 shadow-sm space-y-5">
+    <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-2xl p-5 sm:p-6 shadow-xs dark:shadow-sm space-y-5 transition-colors">
       {/* Section Header */}
       <div>
-        <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">
+        <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
           Habit Performance
         </h2>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
           Compare your habits by completion count • Tap any habit to inspect deep-dive metrics
         </p>
       </div>
@@ -109,10 +109,10 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
                 key={habit.habit_id}
                 type="button"
                 onClick={() => setSelectedHabitId(habit.habit_id)}
-                className={`w-full text-left p-3 rounded-xl border transition-all duration-150 flex flex-col gap-2 ${
+                className={`w-full text-left p-3 rounded-xl border transition-all duration-150 flex flex-col gap-2 cursor-pointer ${
                   isSelected
-                    ? 'bg-[#1B1D20] border-[#35C86B] ring-1 ring-[#35C86B]/40 shadow-sm'
-                    : 'bg-[#181A1D]/60 border-[#23272D] hover:border-slate-600 hover:bg-[#1B1D20]'
+                    ? 'bg-emerald-50/70 dark:bg-[#1B1D20] border-emerald-500 dark:border-[#35C86B] ring-1 ring-emerald-500/40 dark:ring-[#35C86B]/40 shadow-xs'
+                    : 'bg-slate-50/60 dark:bg-[#181A1D]/60 border-slate-200 dark:border-[#23272D] hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-100/70 dark:hover:bg-[#1B1D20]'
                 }`}
                 aria-label={`Select ${habit.name} with ${habit.completions_count} completions`}
               >
@@ -125,31 +125,31 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
                     >
                       <Icon className="w-3.5 h-3.5" />
                     </div>
-                    <span className="font-bold text-white truncate">
+                    <span className="font-bold text-slate-900 dark:text-white truncate">
                       {habit.name}
                     </span>
-                    <span className="text-[10px] uppercase px-1.5 py-0.2 rounded-full bg-[#151719] text-slate-400 border border-[#23272D]">
+                    <span className="text-[10px] uppercase px-1.5 py-0.2 rounded-full bg-white dark:bg-[#151719] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-[#23272D]">
                       {habit.category}
                     </span>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-slate-400 font-semibold text-[11px]">
+                    <span className="text-slate-500 dark:text-slate-400 font-semibold text-[11px]">
                       {habit.completion_rate}%
                     </span>
-                    <span className="font-extrabold text-[#35C86B] text-xs">
+                    <span className="font-extrabold text-emerald-600 dark:text-[#35C86B] text-xs">
                       {habit.completions_count} {habit.completions_count === 1 ? 'check-in' : 'check-ins'}
                     </span>
                   </div>
                 </div>
 
                 {/* Progress Visual Bar */}
-                <div className="w-full h-2.5 bg-[#121416] rounded-full overflow-hidden border border-[#23272D]">
+                <div className="w-full h-2.5 bg-slate-200/70 dark:bg-[#121416] rounded-full overflow-hidden border border-slate-200 dark:border-[#23272D]">
                   <div
                     className="h-full rounded-full transition-all duration-500"
                     style={{
                       width: `${pct}%`,
-                      backgroundColor: isSelected ? '#35C86B' : habit.color || '#35C86B',
+                      backgroundColor: isSelected ? '#10B981' : habit.color || '#10B981',
                     }}
                   />
                 </div>
@@ -160,9 +160,9 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
 
         {/* Right: Selected Habit Deep-Dive Detail Card (5 cols) */}
         {activeHabit && (
-          <div className="lg:col-span-5 bg-[#1B1D20] border border-[#2A2E35] rounded-xl p-5 space-y-4 shadow-sm animate-fadeIn">
+          <div className="lg:col-span-5 bg-slate-50 dark:bg-[#1B1D20] border border-slate-200 dark:border-[#2A2E35] rounded-2xl p-5 space-y-4 shadow-xs dark:shadow-sm animate-fadeIn">
             {/* Header */}
-            <div className="flex items-center gap-3 border-b border-[#23272D] pb-3.5">
+            <div className="flex items-center gap-3 border-b border-slate-200 dark:border-[#23272D] pb-3.5">
               <div
                 className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 shadow-xs"
                 style={{ backgroundColor: `${activeHabit.color}25`, color: activeHabit.color }}
@@ -170,62 +170,62 @@ export const HabitPerformance: React.FC<HabitPerformanceProps> = ({ items }) => 
                 <ActiveIcon className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-base font-bold text-white truncate">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
                   {activeHabit.name}
                 </h3>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {activeHabit.category}
                 </span>
               </div>
             </div>
 
             {/* Total Completions Highlight */}
-            <div className="bg-[#151719] border border-[#23272D] rounded-xl p-3.5 flex items-center justify-between">
+            <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-xl p-3.5 flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
                   Total Completions
                 </span>
-                <span className="text-2xl font-black text-[#35C86B]">
+                <span className="text-2xl font-black text-emerald-600 dark:text-[#35C86B]">
                   {activeHabit.completions_count}
                 </span>
               </div>
-              <CheckCircle2 className="w-8 h-8 text-[#35C86B]/20" />
+              <CheckCircle2 className="w-8 h-8 text-emerald-500/20 dark:text-[#35C86B]/20" />
             </div>
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 gap-2.5 text-xs">
-              <div className="bg-[#151719] border border-[#23272D] rounded-lg p-3 space-y-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3 text-[#35C86B]" /> Rate
+              <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-lg p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3 text-emerald-600 dark:text-[#35C86B]" /> Rate
                 </span>
-                <span className="text-base font-bold text-white block">
+                <span className="text-base font-bold text-slate-900 dark:text-white block">
                   {activeHabit.completion_rate}%
                 </span>
               </div>
 
-              <div className="bg-[#151719] border border-[#23272D] rounded-lg p-3 space-y-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
+              <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-lg p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase flex items-center gap-1">
                   <Flame className="w-3 h-3 text-amber-500" /> Current Streak
                 </span>
-                <span className="text-base font-bold text-white block">
+                <span className="text-base font-bold text-slate-900 dark:text-white block">
                   {activeHabit.current_streak} {activeHabit.current_streak === 1 ? 'day' : 'days'}
                 </span>
               </div>
 
-              <div className="bg-[#151719] border border-[#23272D] rounded-lg p-3 space-y-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                  <Award className="w-3 h-3 text-indigo-400" /> Best Streak
+              <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-lg p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase flex items-center gap-1">
+                  <Award className="w-3 h-3 text-indigo-500 dark:text-indigo-400" /> Best Streak
                 </span>
-                <span className="text-base font-bold text-white block">
+                <span className="text-base font-bold text-slate-900 dark:text-white block">
                   {activeHabit.longest_streak} {activeHabit.longest_streak === 1 ? 'day' : 'days'}
                 </span>
               </div>
 
-              <div className="bg-[#151719] border border-[#23272D] rounded-lg p-3 space-y-0.5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
+              <div className="bg-white dark:bg-[#151719] border border-slate-200 dark:border-[#23272D] rounded-lg p-3 space-y-0.5">
+                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase flex items-center gap-1">
                   <Clock className="w-3 h-3 text-slate-400" /> Last Done
                 </span>
-                <span className="text-xs font-bold text-slate-200 block truncate">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block truncate">
                   {formatLastCompleted(activeHabit.last_completed)}
                 </span>
               </div>
