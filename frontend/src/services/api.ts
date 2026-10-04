@@ -154,6 +154,10 @@ export const authService = {
     });
     return res.data;
   },
+  deleteAvatar: async (): Promise<User> => {
+    const res = await apiClient.delete<User>('/auth/profile/avatar');
+    return res.data;
+  },
   requestEmailChange: async (new_email: string): Promise<{ message: string; expires_in: number }> => {
     const res = await apiClient.post<{ message: string; expires_in: number }>('/auth/profile/request-email-change', {
       new_email,

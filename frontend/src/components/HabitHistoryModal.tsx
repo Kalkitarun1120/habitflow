@@ -102,11 +102,10 @@ export const HabitHistoryModal: React.FC<HabitHistoryModalProps> = ({
                 <button
                   key={item.days}
                   onClick={() => setRangeDays(item.days)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${
-                    rangeDays === item.days
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all ${rangeDays === item.days
                       ? 'bg-emerald-600 text-white shadow-sm'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
+                    }`}
                 >
                   {item.label}
                 </button>

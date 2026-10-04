@@ -32,7 +32,7 @@ import { GoogleAuthButton } from '../components/GoogleAuthButton';
 import type { StatisticsResponse } from '../types';
 
 export const ProfilePage: React.FC = () => {
-  const { user, logout, linkGoogle, unlinkProvider, updateProfile, uploadAvatar, changePassword } = useAuth();
+  const { user, logout, linkGoogle, unlinkProvider, updateProfile, uploadAvatar, removeAvatar, changePassword } = useAuth();
   const { addToast } = useToast();
 
   const [stats, setStats] = useState<StatisticsResponse | null>(null);
@@ -44,9 +44,11 @@ export const ProfilePage: React.FC = () => {
   const [editTimezone, setEditTimezone] = useState(user?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC');
   const [isSavingProfile, setIsSavingProfile] = useState(false);
 
-  // Avatar Upload
+  // Avatar Upload & Remove
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isRemovingAvatar, setIsRemovingAvatar] = useState(false);
+  const [isRemoveAvatarDialogOpen, setIsRemoveAvatarDialogOpen] = useState(false);
 
   // Email Change Modal State
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -126,7 +128,7 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
-  // 2. Avatar Upload
+  // 2. Avatar Upload & Remove
   const handleAvatarFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -152,6 +154,19 @@ export const ProfilePage: React.FC = () => {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    setIsRemovingAvatar(true);
+    try {
+      await removeAvatar();
+      addToast('success', 'Profile Picture Removed', 'Your avatar has been reset to default initials.');
+      setIsRemoveAvatarDialogOpen(false);
+    } catch (err: any) {
+      addToast('error', 'Remove Failed', err?.response?.data?.detail || 'Could not remove profile picture.');
+    } finally {
+      setIsRemovingAvatar(false);
     }
   };
 
@@ -320,34 +335,74 @@ export const ProfilePage: React.FC = () => {
     <div className="space-y-6 p-4 sm:p-8 max-w-4xl mx-auto pb-24 md:pb-12 animate-fadeIn">
       {/* 1. Profile Header Card */}
       <div className="bg-white dark:bg-[#0C1E22] rounded-2xl p-6 sm:p-7 border border-slate-200/90 dark:border-[#16383B] shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        {/* Avatar with upload button */}
-        <div className="relative group">
-          <UserAvatar
-            name={user.name}
-            avatar={user.avatar}
-            size="lg"
-            className="w-24 h-24 text-3xl shadow-md ring-4 ring-emerald-500/20"
-          />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploadingAvatar}
-            className="absolute bottom-0 right-0 p-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition-transform hover:scale-105 cursor-pointer disabled:opacity-50"
-            title="Upload new profile picture"
-          >
-            {isUploadingAvatar ? (
-              <RefreshCw className="w-4 h-4 animate-spin" />
-            ) : (
-              <Camera className="w-4 h-4" />
+        {/* Avatar with upload & remove buttons */}
+        <div className="flex flex-col items-center sm:items-start gap-3">
+          <div className="relative group">
+            <UserAvatar
+              name={user.name}
+              avatar={user.avatar}
+              size="xl"
+              className="w-24 h-24 text-3xl shadow-md ring-4 ring-emerald-500/20"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploadingAvatar || isRemovingAvatar}
+              className="absolute bottom-0 right-0 p-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg transition-transform hover:scale-105 cursor-pointer disabled:opacity-50"
+              title="Upload new profile picture"
+            >
+              {isUploadingAvatar ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={handleAvatarFileSelect}
+              className="hidden"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploadingAvatar || isRemovingAvatar}
+              className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            >
+              {isUploadingAvatar ? (
+                <>
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                  <span>Uploading...</span>
+                </>
+              ) : (
+                <>
+                  <Camera className="w-3 h-3" />
+                  <span>{user.avatar ? 'Change Photo' : 'Upload Photo'}</span>
+                </>
+              )}
+            </button>
+
+            {user.avatar && (
+              <button
+                type="button"
+                onClick={() => setIsRemoveAvatarDialogOpen(true)}
+                disabled={isUploadingAvatar || isRemovingAvatar}
+                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                title="Remove profile picture"
+              >
+                {isRemovingAvatar ? (
+                  <RefreshCw className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3 h-3" />
+                )}
+                <span>Remove</span>
+              </button>
             )}
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp,image/gif"
-            onChange={handleAvatarFileSelect}
-            className="hidden"
-          />
+          </div>
         </div>
 
         {/* User Info & Edit Toggle */}
@@ -1126,6 +1181,18 @@ export const ProfilePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Remove Avatar Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={isRemoveAvatarDialogOpen}
+        onCancel={() => setIsRemoveAvatarDialogOpen(false)}
+        onConfirm={handleRemoveAvatar}
+        title="Remove Profile Picture"
+        message="Are you sure you want to remove your profile picture? Your profile and navbar will display your initials instead."
+        confirmLabel="Remove Picture"
+        cancelLabel="Cancel"
+        isDanger={true}
+      />
 
       {/* Delete Account Confirmation Dialog */}
       <ConfirmDialog

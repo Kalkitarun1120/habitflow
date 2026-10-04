@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 
 interface ConfirmDialogProps {
@@ -22,11 +23,26 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const orig = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = orig;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white dark:bg-[#131B26] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn"
+      onClick={onCancel}
+    >
+      <div
+        className="bg-white dark:bg-[#131B26] border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className={`p-2.5 rounded-xl ${isDanger ? 'bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
@@ -67,6 +83,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

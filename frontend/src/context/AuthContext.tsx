@@ -17,6 +17,7 @@ interface AuthContextType {
   unlinkProvider: (provider: string) => Promise<void>;
   updateProfile: (data: { name?: string; avatar?: string; timezone?: string }) => Promise<User>;
   uploadAvatar: (file: File) => Promise<User>;
+  removeAvatar: () => Promise<User>;
   changePassword: (currentPass: string, newPass: string) => Promise<void>;
   forgotPassword: (email: string) => Promise<string>;
   resetPassword: (email: string, otp: string, newPass: string) => Promise<void>;
@@ -124,6 +125,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return updated;
   };
 
+  const removeAvatar = async (): Promise<User> => {
+    const updated = await authService.deleteAvatar();
+    setUser(updated);
+    localStorage.setItem('habitflow_user', JSON.stringify(updated));
+    return updated;
+  };
+
   const changePassword = async (currentPass: string, newPass: string) => {
     await authService.changePassword(currentPass, newPass);
   };
@@ -161,6 +169,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         unlinkProvider,
         updateProfile,
         uploadAvatar,
+        removeAvatar,
         changePassword,
         forgotPassword,
         resetPassword,

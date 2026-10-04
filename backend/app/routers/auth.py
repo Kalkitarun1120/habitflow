@@ -757,7 +757,18 @@ def update_profile(
     if profile_in.timezone is not None:
         current_user.timezone = profile_in.timezone.strip()
     if profile_in.avatar is not None:
-        current_user.avatar = profile_in.avatar.strip()
+        stripped_avatar = profile_in.avatar.strip()
+        if not stripped_avatar or stripped_avatar.lower() in ("none", "null", "remove"):
+            if current_user.avatar and current_user.avatar.startswith("/uploads/avatars/"):
+                old_file = os.path.join(os.getcwd(), current_user.avatar.lstrip("/"))
+                if os.path.exists(old_file):
+                    try:
+                        os.remove(old_file)
+                    except Exception:
+                        pass
+            current_user.avatar = None
+        else:
+            current_user.avatar = stripped_avatar
 
     db.commit()
     db.refresh(current_user)
@@ -796,10 +807,39 @@ async def upload_avatar(
     os.makedirs(upload_dir, exist_ok=True)
     file_path = os.path.join(upload_dir, filename)
 
+    # Clean up previous local avatar file if exists
+    if current_user.avatar and current_user.avatar.startswith("/uploads/avatars/"):
+        old_file = os.path.join(os.getcwd(), current_user.avatar.lstrip("/"))
+        if os.path.exists(old_file):
+            try:
+                os.remove(old_file)
+            except Exception:
+                pass
+
     with open(file_path, "wb") as f:
         f.write(contents)
 
     current_user.avatar = f"/uploads/avatars/{filename}"
+    db.commit()
+    db.refresh(current_user)
+    return build_user_response(current_user)
+
+
+@router.delete("/profile/avatar", response_model=UserResponse)
+def delete_avatar(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Deletes current user's profile avatar and resets it to default initials."""
+    if current_user.avatar and current_user.avatar.startswith("/uploads/avatars/"):
+        old_file = os.path.join(os.getcwd(), current_user.avatar.lstrip("/"))
+        if os.path.exists(old_file):
+            try:
+                os.remove(old_file)
+            except Exception:
+                pass
+
+    current_user.avatar = None
     db.commit()
     db.refresh(current_user)
     return build_user_response(current_user)

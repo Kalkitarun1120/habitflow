@@ -97,7 +97,7 @@ export const HabitModal: React.FC<HabitModalProps> = ({
       setCategory(habitToEdit.category);
       setIcon(habitToEdit.icon);
       setColor(habitToEdit.color);
-      
+
       const freq = (habitToEdit.frequency || 'daily').toLowerCase();
       if (freq === 'daily' || freq === 'every day') {
         setFrequencyType('daily');
@@ -306,11 +306,10 @@ export const HabitModal: React.FC<HabitModalProps> = ({
                       key={d.id}
                       type="button"
                       onClick={() => toggleDay(d.id)}
-                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        isChecked
-                          ? 'bg-emerald-600 text-white shadow-sm'
-                          : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300'
-                      }`}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${isChecked
+                        ? 'bg-emerald-600 text-white shadow-sm'
+                        : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-300'
+                        }`}
                     >
                       {d.label}
                     </button>
@@ -366,11 +365,10 @@ export const HabitModal: React.FC<HabitModalProps> = ({
                       key={item.id}
                       type="button"
                       onClick={() => setIcon(item.id)}
-                      className={`p-2 rounded-lg border transition-all ${
-                        isSelected
-                          ? 'bg-emerald-600 text-white border-transparent shadow-sm scale-105'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
-                      }`}
+                      className={`p-2 rounded-lg border transition-all ${isSelected
+                        ? 'bg-emerald-600 text-white border-transparent shadow-sm scale-105'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                        }`}
                       title={item.label}
                     >
                       <IconComp className="w-3.5 h-3.5 stroke-[2.2]" />
@@ -390,11 +388,10 @@ export const HabitModal: React.FC<HabitModalProps> = ({
                     key={c}
                     type="button"
                     onClick={() => setColor(c)}
-                    className={`w-6 h-6 rounded-full transition-transform ${
-                      color === c
-                        ? 'ring-2 ring-emerald-400 dark:ring-emerald-500 scale-110 shadow-sm'
-                        : 'hover:scale-105 opacity-80 hover:opacity-100'
-                    }`}
+                    className={`w-6 h-6 rounded-full transition-transform ${color === c
+                      ? 'ring-2 ring-emerald-400 dark:ring-emerald-500 scale-110 shadow-sm'
+                      : 'hover:scale-105 opacity-80 hover:opacity-100'
+                      }`}
                     style={{ backgroundColor: c }}
                   />
                 ))}

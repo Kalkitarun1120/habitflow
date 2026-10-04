@@ -498,4 +498,25 @@ def test_unified_account_multi_method_resolution(mock_google):
     assert dup_phone_resp.status_code == 400
     assert "phone number is already registered" in dup_phone_resp.json()["detail"].lower()
 
+    # 8. Test Avatar Upload and Removal
+    # Upload avatar image
+    avatar_content = b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00\x00\x00\x1f\x15c4\x00\x00\x00\nIDATx\x9cc\x00\x01\x00\x00\x05\x00\x01\r\n-\xb4\x00\x00\x00\x00IEND\xaeB`\x82"
+    upload_resp = client.post(
+        "/api/auth/profile/avatar",
+        headers={"Authorization": f"Bearer {user_token}"},
+        files={"file": ("test_avatar.png", avatar_content, "image/png")}
+    )
+    assert upload_resp.status_code == 200
+    uploaded_avatar = upload_resp.json()["avatar"]
+    assert uploaded_avatar.startswith("/uploads/avatars/")
+
+    # Delete avatar
+    delete_avatar_resp = client.delete(
+        "/api/auth/profile/avatar",
+        headers={"Authorization": f"Bearer {user_token}"}
+    )
+    assert delete_avatar_resp.status_code == 200
+    assert delete_avatar_resp.json()["avatar"] is None
+
+
 

@@ -300,11 +300,10 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                   key={tab.id}
                   type="button"
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                    isSelected
+                  className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${isSelected
                       ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs font-extrabold'
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                  }`}
+                    }`}
                   aria-pressed={isSelected}
                 >
                   {tab.label}
@@ -450,13 +449,12 @@ export const HabitCalendar: React.FC<HabitCalendarContainerProps> = ({
                       </div>
                       <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5">
                         <span
-                          className={`font-semibold ${
-                            h.completed
+                          className={`font-semibold ${h.completed
                               ? 'text-emerald-600 dark:text-[#35C86B]'
                               : h.skipped
-                              ? 'text-amber-500 dark:text-amber-400'
-                              : 'text-slate-500'
-                          }`}
+                                ? 'text-amber-500 dark:text-amber-400'
+                                : 'text-slate-500'
+                            }`}
                         >
                           {h.completed ? 'Completed ✓' : h.skipped ? 'Skipped' : 'Not completed'}
                         </span>
